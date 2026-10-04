@@ -1,0 +1,1483 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "beat-1",
+      "properties": {
+        "id": 1,
+        "name": "Beat 01 - Core North (Bada Bazaar & Jhajjar Gate)",
+        "beatNo": "Beat 01",
+        "length_km": 10.09,
+        "roadCount": 90,
+        "sweepers": 12,
+        "dailyTargetMeters": 840,
+        "color": "#e11d48",
+        "type": "Inner Commercial Core",
+        "remarks": "12 Sweepers deployed (~840m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61463224503157,
+              28.19781011513495
+            ],
+            [
+              76.60841962538049,
+              28.200206018816143
+            ],
+            [
+              76.60829006405659,
+              28.20020052665723
+            ],
+            [
+              76.6077624770604,
+              28.195544878197282
+            ],
+            [
+              76.61224216758913,
+              28.191656743627597
+            ],
+            [
+              76.6136414825667,
+              28.192212561329573
+            ],
+            [
+              76.61527003265991,
+              28.196128559023787
+            ],
+            [
+              76.61463224503157,
+              28.19781011513495
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-2",
+      "properties": {
+        "id": 2,
+        "name": "Beat 02 - Core East (Ghanta Ghar & Dharuhera Gate)",
+        "beatNo": "Beat 02",
+        "length_km": 10.28,
+        "roadCount": 141,
+        "sweepers": 12,
+        "dailyTargetMeters": 856,
+        "color": "#ea580c",
+        "type": "Inner Commercial Core",
+        "remarks": "12 Sweepers deployed (~856m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61803686131269,
+              28.190807988837367
+            ],
+            [
+              76.6211685258815,
+              28.195017673252387
+            ],
+            [
+              76.61999994005183,
+              28.196031811041955
+            ],
+            [
+              76.61527003264213,
+              28.19612855901877
+            ],
+            [
+              76.61364148257381,
+              28.192212561339055
+            ],
+            [
+              76.61803686131269,
+              28.190807988837367
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-3",
+      "properties": {
+        "id": 3,
+        "name": "Beat 03 - Core South (Nai Sarak & Gokal Gate)",
+        "beatNo": "Beat 03",
+        "length_km": 10.14,
+        "roadCount": 99,
+        "sweepers": 12,
+        "dailyTargetMeters": 844,
+        "color": "#d97706",
+        "type": "Inner Commercial Core",
+        "remarks": "12 Sweepers deployed (~844m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62491212277989,
+              28.202525578523705
+            ],
+            [
+              76.62321336601059,
+              28.203752473926876
+            ],
+            [
+              76.61855869080543,
+              28.20217908185355
+            ],
+            [
+              76.6199999400338,
+              28.19603181103368
+            ],
+            [
+              76.62116852585771,
+              28.195017673285616
+            ],
+            [
+              76.62372592494543,
+              28.19500995506225
+            ],
+            [
+              76.62620976993713,
+              28.198136712125624
+            ],
+            [
+              76.62491212277989,
+              28.202525578523705
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-4",
+      "properties": {
+        "id": 4,
+        "name": "Beat 04 - Core West (Qutabpur & Balwal Gate)",
+        "beatNo": "Beat 04",
+        "length_km": 9.76,
+        "roadCount": 96,
+        "sweepers": 12,
+        "dailyTargetMeters": 813,
+        "color": "#65a30d",
+        "type": "Inner Commercial Core",
+        "remarks": "12 Sweepers deployed (~813m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61595775354894,
+              28.203956771107674
+            ],
+            [
+              76.60841962533068,
+              28.20020601881549
+            ],
+            [
+              76.61463224502998,
+              28.19781011514196
+            ],
+            [
+              76.61804656707949,
+              28.202274932126702
+            ],
+            [
+              76.61595775354894,
+              28.203956771107674
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-5",
+      "properties": {
+        "id": 5,
+        "name": "Beat 05 - Core Central (Sarafa Bazaar & Main Mandi)",
+        "beatNo": "Beat 05",
+        "length_km": 10.06,
+        "roadCount": 109,
+        "sweepers": 12,
+        "dailyTargetMeters": 838,
+        "color": "#16a34a",
+        "type": "Inner Commercial Core",
+        "remarks": "12 Sweepers deployed (~838m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61804656700814,
+              28.20227493215561
+            ],
+            [
+              76.6146322450178,
+              28.197810115126032
+            ],
+            [
+              76.61527003265981,
+              28.1961285590184
+            ],
+            [
+              76.61999994003367,
+              28.196031811034235
+            ],
+            [
+              76.61855869084049,
+              28.202179081835958
+            ],
+            [
+              76.61804656700814,
+              28.20227493215561
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-6",
+      "properties": {
+        "id": 6,
+        "name": "Beat 06 - Model Town South & Sector 3 Extension",
+        "beatNo": "Beat 06",
+        "length_km": 8.94,
+        "roadCount": 91,
+        "sweepers": 10,
+        "dailyTargetMeters": 894,
+        "color": "#059669",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~894m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60806638616567,
+              28.200465850356814
+            ],
+            [
+              76.59969618862996,
+              28.198615579487544
+            ],
+            [
+              76.59785366950305,
+              28.190086406237043
+            ],
+            [
+              76.59992377094973,
+              28.19003538132099
+            ],
+            [
+              76.60776247706283,
+              28.195544878186933
+            ],
+            [
+              76.60829006410147,
+              28.200200526607148
+            ],
+            [
+              76.60806638616567,
+              28.200465850356814
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-7",
+      "properties": {
+        "id": 7,
+        "name": "Beat 07 - Model Town Core Block A/B & Bawal Rd North",
+        "beatNo": "Beat 07",
+        "length_km": 10.77,
+        "roadCount": 92,
+        "sweepers": 11,
+        "dailyTargetMeters": 978,
+        "color": "#0d9488",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~978m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60908138836551,
+              28.18456592587767
+            ],
+            [
+              76.6105585674381,
+              28.186030119008592
+            ],
+            [
+              76.61224216760509,
+              28.191656743671587
+            ],
+            [
+              76.60776247707436,
+              28.19554487819504
+            ],
+            [
+              76.59992377096825,
+              28.190035381316015
+            ],
+            [
+              76.60908138836551,
+              28.18456592587767
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-8",
+      "properties": {
+        "id": 8,
+        "name": "Beat 08 - Brass Market & Shopping Complex",
+        "beatNo": "Beat 08",
+        "length_km": 9.39,
+        "roadCount": 75,
+        "sweepers": 10,
+        "dailyTargetMeters": 939,
+        "color": "#0891b2",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~939m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60908138837011,
+              28.18456592588354
+            ],
+            [
+              76.59992377096293,
+              28.190035381319202
+            ],
+            [
+              76.59785366947513,
+              28.190086406211805
+            ],
+            [
+              76.58486939999206,
+              28.184298508057427
+            ],
+            [
+              76.5848694,
+              28.171471200000003
+            ],
+            [
+              76.60963701401552,
+              28.171471200005247
+            ],
+            [
+              76.60908138837011,
+              28.18456592588354
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-9",
+      "properties": {
+        "id": 9,
+        "name": "Beat 09 - Bawal Road Industrial Corridor",
+        "beatNo": "Beat 09",
+        "length_km": 9.34,
+        "roadCount": 73,
+        "sweepers": 10,
+        "dailyTargetMeters": 933,
+        "color": "#0284c7",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~933m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61846885232887,
+              28.185789283244162
+            ],
+            [
+              76.61968258918733,
+              28.186910634551218
+            ],
+            [
+              76.6180368612944,
+              28.190807988801957
+            ],
+            [
+              76.61364148258028,
+              28.192212561336994
+            ],
+            [
+              76.61224216757496,
+              28.191656743570828
+            ],
+            [
+              76.61055856739335,
+              28.186030118970404
+            ],
+            [
+              76.61846885232887,
+              28.185789283244162
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-10",
+      "properties": {
+        "id": 10,
+        "name": "Beat 10 - Konsiwas Road & Southern Border",
+        "beatNo": "Beat 10",
+        "length_km": 12.68,
+        "roadCount": 86,
+        "sweepers": 11,
+        "dailyTargetMeters": 1152,
+        "color": "#2563eb",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1152m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61846885234036,
+              28.185789283267844
+            ],
+            [
+              76.61055856740106,
+              28.18603011897017
+            ],
+            [
+              76.60908138836996,
+              28.184565925887323
+            ],
+            [
+              76.60963701401576,
+              28.171471199999477
+            ],
+            [
+              76.61682868320078,
+              28.171471199995583
+            ],
+            [
+              76.61846885234036,
+              28.185789283267844
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-11",
+      "properties": {
+        "id": 11,
+        "name": "Beat 11 - Southern Ward 23 & 26 Colonies",
+        "beatNo": "Beat 11",
+        "length_km": 14.03,
+        "roadCount": 109,
+        "sweepers": 11,
+        "dailyTargetMeters": 1275,
+        "color": "#4f46e5",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1275m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62619031902564,
+              28.180095474968564
+            ],
+            [
+              76.62215162032638,
+              28.18676525565085
+            ],
+            [
+              76.61968258919264,
+              28.186910634524388
+            ],
+            [
+              76.61846885234125,
+              28.185789283275696
+            ],
+            [
+              76.61682868320152,
+              28.17147120000205
+            ],
+            [
+              76.62224889490008,
+              28.171471200006682
+            ],
+            [
+              76.62619031902564,
+              28.180095474968564
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-12",
+      "properties": {
+        "id": 12,
+        "name": "Beat 12 - Anaj Mandi Complex & Grain Market",
+        "beatNo": "Beat 12",
+        "length_km": 10.51,
+        "roadCount": 99,
+        "sweepers": 11,
+        "dailyTargetMeters": 955,
+        "color": "#7c3aed",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~955m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62568094524529,
+              28.190150042193906
+            ],
+            [
+              76.62372592495223,
+              28.195009955056115
+            ],
+            [
+              76.62116852590576,
+              28.19501767328547
+            ],
+            [
+              76.61803686127575,
+              28.190807988846153
+            ],
+            [
+              76.61968258921235,
+              28.186910634523226
+            ],
+            [
+              76.62215162034113,
+              28.1867652556936
+            ],
+            [
+              76.62568094524529,
+              28.190150042193906
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-13",
+      "properties": {
+        "id": 13,
+        "name": "Beat 13 - Old Tehsil & District Court Area",
+        "beatNo": "Beat 13",
+        "length_km": 10.98,
+        "roadCount": 60,
+        "sweepers": 11,
+        "dailyTargetMeters": 997,
+        "color": "#9333ea",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~997m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63202889890286,
+              28.183769955804404
+            ],
+            [
+              76.62619031903525,
+              28.180095474979478
+            ],
+            [
+              76.62224889489357,
+              28.17147119999245
+            ],
+            [
+              76.64523787400938,
+              28.171471199995665
+            ],
+            [
+              76.63202889890286,
+              28.183769955804404
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-14",
+      "properties": {
+        "id": 14,
+        "name": "Beat 14 - Railway Station West & Goods Yard",
+        "beatNo": "Beat 14",
+        "length_km": 13.74,
+        "roadCount": 93,
+        "sweepers": 11,
+        "dailyTargetMeters": 1249,
+        "color": "#c026d3",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1249m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63231131358805,
+              28.186558558533836
+            ],
+            [
+              76.63019840692424,
+              28.18916316280356
+            ],
+            [
+              76.62568094521292,
+              28.190150042205754
+            ],
+            [
+              76.62215162031751,
+              28.18676525567096
+            ],
+            [
+              76.62619031902173,
+              28.18009547497098
+            ],
+            [
+              76.6320288989048,
+              28.1837699558099
+            ],
+            [
+              76.63231131358805,
+              28.186558558533836
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-15",
+      "properties": {
+        "id": 15,
+        "name": "Beat 15 - Garhi Bolni Road & Ward 21 South",
+        "beatNo": "Beat 15",
+        "length_km": 12.55,
+        "roadCount": 94,
+        "sweepers": 11,
+        "dailyTargetMeters": 1140,
+        "color": "#db2777",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1140m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6563356533416,
+              28.184890343185845
+            ],
+            [
+              76.63962042246396,
+              28.190254658561834
+            ],
+            [
+              76.63231131344725,
+              28.18655855855136
+            ],
+            [
+              76.63202889890445,
+              28.183769955806206
+            ],
+            [
+              76.64523787400105,
+              28.171471200003406
+            ],
+            [
+              76.66031849999999,
+              28.171471200000003
+            ],
+            [
+              76.66031850001751,
+              28.181809701163942
+            ],
+            [
+              76.6563356533416,
+              28.184890343185845
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-16",
+      "properties": {
+        "id": 16,
+        "name": "Beat 16 - Mahendragarh Road & Rampura Gate",
+        "beatNo": "Beat 16",
+        "length_km": 10.86,
+        "roadCount": 89,
+        "sweepers": 11,
+        "dailyTargetMeters": 987,
+        "color": "#e11d48",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~987m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63212890044362,
+              28.196901775707424
+            ],
+            [
+              76.62620976995626,
+              28.19813671214656
+            ],
+            [
+              76.62372592495122,
+              28.19500995505859
+            ],
+            [
+              76.62568094519807,
+              28.19015004220899
+            ],
+            [
+              76.6301984069303,
+              28.18916316278653
+            ],
+            [
+              76.63212890044362,
+              28.196901775707424
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-17",
+      "properties": {
+        "id": 17,
+        "name": "Beat 17 - Rampura Link & Western Bypass",
+        "beatNo": "Beat 17",
+        "length_km": 10.51,
+        "roadCount": 87,
+        "sweepers": 11,
+        "dailyTargetMeters": 955,
+        "color": "#ea580c",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~955m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63561910183596,
+              28.198593446702972
+            ],
+            [
+              76.63212890044228,
+              28.19690177571335
+            ],
+            [
+              76.63019840693624,
+              28.18916316281034
+            ],
+            [
+              76.6323113135293,
+              28.18655855859285
+            ],
+            [
+              76.6396204224541,
+              28.1902546585681
+            ],
+            [
+              76.63561910183596,
+              28.198593446702972
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-18",
+      "properties": {
+        "id": 18,
+        "name": "Beat 18 - Jhajjar Road West & Ward 7/10",
+        "beatNo": "Beat 18",
+        "length_km": 10.55,
+        "roadCount": 50,
+        "sweepers": 11,
+        "dailyTargetMeters": 959,
+        "color": "#d97706",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~959m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64627675078947,
+              28.199830280198512
+            ],
+            [
+              76.63640415325952,
+              28.200214364148735
+            ],
+            [
+              76.63561910188264,
+              28.19859344673759
+            ],
+            [
+              76.63962042245753,
+              28.190254658561
+            ],
+            [
+              76.65633565335617,
+              28.18489034317339
+            ],
+            [
+              76.64627675078947,
+              28.199830280198512
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-19",
+      "properties": {
+        "id": 19,
+        "name": "Beat 19 - Circular Road West Outer & Ward 8/9",
+        "beatNo": "Beat 19",
+        "length_km": 5.57,
+        "roadCount": 38,
+        "sweepers": 10,
+        "dailyTargetMeters": 557,
+        "color": "#65a30d",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~557m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64898010909937,
+              28.216887144901012
+            ],
+            [
+              76.64627675078492,
+              28.199830280186706
+            ],
+            [
+              76.65633565336701,
+              28.184890343157285
+            ],
+            [
+              76.66031850000468,
+              28.18180970117386
+            ],
+            [
+              76.66031849999999,
+              28.223629199999998
+            ],
+            [
+              76.65164084354186,
+              28.223629199978618
+            ],
+            [
+              76.64898010909937,
+              28.216887144901012
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-20",
+      "properties": {
+        "id": 20,
+        "name": "Beat 20 - Railway Colony & Rewari Jn North",
+        "beatNo": "Beat 20",
+        "length_km": 6.19,
+        "roadCount": 40,
+        "sweepers": 10,
+        "dailyTargetMeters": 618,
+        "color": "#16a34a",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~618m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63588385460476,
+              28.202404424994956
+            ],
+            [
+              76.63640415326718,
+              28.200214364192693
+            ],
+            [
+              76.64627675078751,
+              28.199830280203013
+            ],
+            [
+              76.64898010908483,
+              28.216887144880673
+            ],
+            [
+              76.63588385460476,
+              28.202404424994956
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-21",
+      "properties": {
+        "id": 21,
+        "name": "Beat 21 - Kaluwas Village & Northern Outskirts",
+        "beatNo": "Beat 21",
+        "length_km": 10.58,
+        "roadCount": 101,
+        "sweepers": 11,
+        "dailyTargetMeters": 962,
+        "color": "#059669",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~962m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6324582688548,
+              28.20600810181129
+            ],
+            [
+              76.62491212276828,
+              28.202525578531596
+            ],
+            [
+              76.62620976991863,
+              28.198136712154433
+            ],
+            [
+              76.63212890043313,
+              28.19690177570891
+            ],
+            [
+              76.63561910188,
+              28.198593446732104
+            ],
+            [
+              76.63640415327058,
+              28.200214364178326
+            ],
+            [
+              76.63588385459543,
+              28.202404425002502
+            ],
+            [
+              76.6324582688548,
+              28.20600810181129
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-22",
+      "properties": {
+        "id": 22,
+        "name": "Beat 22 - Rewari Bypass North & Anand Nagar",
+        "beatNo": "Beat 22",
+        "length_km": 8.33,
+        "roadCount": 38,
+        "sweepers": 10,
+        "dailyTargetMeters": 833,
+        "color": "#0d9488",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~833m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63059746534715,
+              28.21748916203974
+            ],
+            [
+              76.63245826886077,
+              28.20600810181115
+            ],
+            [
+              76.63588385460201,
+              28.202404424995585
+            ],
+            [
+              76.64898010909836,
+              28.216887144895654
+            ],
+            [
+              76.65164084355031,
+              28.223629200000065
+            ],
+            [
+              76.63258922051473,
+              28.223629200004886
+            ],
+            [
+              76.63059746534715,
+              28.21748916203974
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-23",
+      "properties": {
+        "id": 23,
+        "name": "Beat 23 - Jhajjar Road North & Ward 31",
+        "beatNo": "Beat 23",
+        "length_km": 6.8,
+        "roadCount": 53,
+        "sweepers": 10,
+        "dailyTargetMeters": 679,
+        "color": "#0891b2",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~679m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62291340060052,
+              28.20980677439524
+            ],
+            [
+              76.62321336598606,
+              28.20375247398232
+            ],
+            [
+              76.62491212275621,
+              28.202525578526025
+            ],
+            [
+              76.63245826886282,
+              28.206008101798602
+            ],
+            [
+              76.63059746534276,
+              28.21748916203089
+            ],
+            [
+              76.62291340060052,
+              28.20980677439524
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-24",
+      "properties": {
+        "id": 24,
+        "name": "Beat 24 - Subhash Basti & New Anaj Mandi North",
+        "beatNo": "Beat 24",
+        "length_km": 8.86,
+        "roadCount": 74,
+        "sweepers": 10,
+        "dailyTargetMeters": 885,
+        "color": "#0284c7",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~885m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61511269326517,
+              28.21089414482141
+            ],
+            [
+              76.61446875993727,
+              28.209301382301824
+            ],
+            [
+              76.61595775356756,
+              28.203956771086855
+            ],
+            [
+              76.61804656705017,
+              28.20227493214773
+            ],
+            [
+              76.61855869077732,
+              28.20217908184778
+            ],
+            [
+              76.62321336598781,
+              28.203752473946995
+            ],
+            [
+              76.62291340059475,
+              28.209806774387815
+            ],
+            [
+              76.61511269326517,
+              28.21089414482141
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-25",
+      "properties": {
+        "id": 25,
+        "name": "Beat 25 - Delhi Road North (Ward 15/16)",
+        "beatNo": "Beat 25",
+        "length_km": 7.96,
+        "roadCount": 66,
+        "sweepers": 10,
+        "dailyTargetMeters": 796,
+        "color": "#2563eb",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~796m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61511269326688,
+              28.21089414481849
+            ],
+            [
+              76.62291340056096,
+              28.20980677439252
+            ],
+            [
+              76.63059746531202,
+              28.21748916200018
+            ],
+            [
+              76.63258922051234,
+              28.223629199997507
+            ],
+            [
+              76.6107174172821,
+              28.22362920000251
+            ],
+            [
+              76.61511269326688,
+              28.21089414481849
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-26",
+      "properties": {
+        "id": 26,
+        "name": "Beat 26 - Housing Board Colony & Sector 1",
+        "beatNo": "Beat 26",
+        "length_km": 12.99,
+        "roadCount": 98,
+        "sweepers": 11,
+        "dailyTargetMeters": 1180,
+        "color": "#4f46e5",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1180m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60710208259921,
+              28.205754356712465
+            ],
+            [
+              76.6144687599443,
+              28.20930138228916
+            ],
+            [
+              76.61511269326144,
+              28.210894144834228
+            ],
+            [
+              76.61071741728631,
+              28.223629199990288
+            ],
+            [
+              76.5974906137448,
+              28.223629199984384
+            ],
+            [
+              76.60710208259921,
+              28.205754356712465
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-27",
+      "properties": {
+        "id": 27,
+        "name": "Beat 27 - Dharuhera Road North Outer",
+        "beatNo": "Beat 27",
+        "length_km": 11.83,
+        "roadCount": 94,
+        "sweepers": 11,
+        "dailyTargetMeters": 1075,
+        "color": "#7c3aed",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1075m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60710208259003,
+              28.205754356689113
+            ],
+            [
+              76.60682637147632,
+              28.20429530894138
+            ],
+            [
+              76.60806638635884,
+              28.20046585011402
+            ],
+            [
+              76.60829006407144,
+              28.20020052664278
+            ],
+            [
+              76.60841962531993,
+              28.200206018810132
+            ],
+            [
+              76.61595775356403,
+              28.203956771099445
+            ],
+            [
+              76.61446875995355,
+              28.209301382293607
+            ],
+            [
+              76.60710208259003,
+              28.205754356689113
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-28",
+      "properties": {
+        "id": 28,
+        "name": "Beat 28 - Phidedi Approach & Eastern Outskirts",
+        "beatNo": "Beat 28",
+        "length_km": 14.97,
+        "roadCount": 108,
+        "sweepers": 11,
+        "dailyTargetMeters": 1360,
+        "color": "#9333ea",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1360m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.58486940000286,
+              28.214070899115086
+            ],
+            [
+              76.59770606485809,
+              28.203631528237846
+            ],
+            [
+              76.60682637158394,
+              28.204295308743387
+            ],
+            [
+              76.60710208259552,
+              28.20575435671818
+            ],
+            [
+              76.59749061373763,
+              28.2236291999977
+            ],
+            [
+              76.5848694,
+              28.223629199999998
+            ],
+            [
+              76.58486940000286,
+              28.214070899115086
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-29",
+      "properties": {
+        "id": 29,
+        "name": "Beat 29 - NH-919 Highway Corridor & Sector 4 Outer",
+        "beatNo": "Beat 29",
+        "length_km": 11.49,
+        "roadCount": 112,
+        "sweepers": 11,
+        "dailyTargetMeters": 1044,
+        "color": "#c026d3",
+        "type": "Outer Municipal Sector",
+        "remarks": "11 Sweepers deployed (~1044m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60682637148369,
+              28.204295308736093
+            ],
+            [
+              76.59770606485472,
+              28.20363152824677
+            ],
+            [
+              76.59969618862877,
+              28.19861557950656
+            ],
+            [
+              76.60806638626974,
+              28.20046585038919
+            ],
+            [
+              76.60682637148369,
+              28.204295308736093
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "beat-30",
+      "properties": {
+        "id": 30,
+        "name": "Beat 30 - Dharuhera Road South (Ward 12/14)",
+        "beatNo": "Beat 30",
+        "length_km": 9.36,
+        "roadCount": 87,
+        "sweepers": 10,
+        "dailyTargetMeters": 936,
+        "color": "#db2777",
+        "type": "Outer Municipal Sector",
+        "remarks": "10 Sweepers deployed (~936m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.59770606486019,
+              28.20363152823297
+            ],
+            [
+              76.58486939999598,
+              28.21407089912068
+            ],
+            [
+              76.58486940000347,
+              28.184298508062508
+            ],
+            [
+              76.59785366949251,
+              28.19008640621955
+            ],
+            [
+              76.59969618861943,
+              28.198615579530095
+            ],
+            [
+              76.59770606486019,
+              28.20363152823297
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

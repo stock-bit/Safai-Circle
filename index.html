@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewari Sweeper Beat Planning & Road-Length Mapping System</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet Geoman Drawing CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.14.2/dist/leaflet-geoman.css" />
+    
+    <!-- App Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-logo">R</div>
+            <div>
+                <h1 class="brand-title">Municipal Council Rewari</h1>
+                <div style="font-size: 0.72rem; color: var(--text-secondary);">Sweeper Beat Planning & GIS Road Deduplication</div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;">
+                📂 Load Project
+                <input type="file" id="project-file-input" accept=".json" style="display: none;" />
+            </label>
+            <button id="btn-save-project" class="btn btn-sm btn-primary">💾 Save Project</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-target="panel-data">Source Data</button>
+                <button class="nav-tab" data-target="panel-dedup">Road Cleaning</button>
+                <button class="nav-tab" data-target="panel-beats">Sweeper Beats</button>
+                <button class="nav-tab" data-target="panel-dash">Dashboard</button>
+                <button class="nav-tab" data-target="panel-export">Export & Save</button>
+            </nav>
+
+            <div class="panel-body">
+                
+                <!-- Tab 1: Source Data -->
+                <div id="panel-data" class="control-panel-tab active">
+                    <div class="card-section">
+                        <div class="card-title">
+                            <span>1. Ward Boundaries (KMZ / KML)</span>
+                            <span id="badge-ward-count" class="badge badge-ward">Not loaded</span>
+                        </div>
+                        <div class="form-group">
+                            <input type="file" id="ward-file-input" accept=".kml,.kmz" class="form-control" />
+                        </div>
+                        <div class="small text-muted">Boundary for Rewari (approx. 32 Wards). Defines working area limit.</div>
+                    </div>
+
+                    <div class="card-section">
+                        <div class="card-title">
+                            <span>2. MC / ULB Roads (Primary)</span>
+                            <span id="badge-ulb-count" class="badge badge-info">Not loaded</span>
+                        </div>
+                        <div class="form-group">
+                            <input type="file" id="ulb-file-input" accept=".kml,.kmz" class="form-control" />
+                        </div>
+                        <div class="small text-muted">Municipal Council Rewari road dataset (~2,661 features).</div>
+                    </div>
+
+                    <div class="card-section">
+                        <div class="card-title">
+                            <span>3. Existing Haryana Roads (Reference)</span>
+                            <span id="badge-ref-count" class="badge badge-warning">Not loaded</span>
+                        </div>
+                        <div class="form-group">
+                            <input type="file" id="ref-file-input" accept=".kml,.kmz" class="form-control" />
+                        </div>
+                        <div class="small text-muted">Reference dataset containing PWD, NHAI, HUDA, HSAMB roads (~4,548 features).</div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Road Deduplication -->
+                <div id="panel-dedup" class="control-panel-tab">
+                    <div class="card-section">
+                        <div class="card-title">Road Cleaning & Integration Strategy</div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight:600; color:#38bdf8;">Road Cleaning Strategy</label>
+                            <select id="setting-clean-strategy" class="form-select" style="background:#0f172a; border-color:#38bdf8; font-weight:500;">
+                                <option value="zonal" selected>🎯 Zonal Merge: Ref Inside Circular Rd + ULB Outside (Zero Gaps)</option>
+                                <option value="dedup">⚡ Algorithmic Deduplication (2m Distance Tolerance)</option>
+                            </select>
+                            <div class="small text-muted mt-1" style="font-size:0.78rem;">
+                                <b>Recommended:</b> Uses dense Reference data inside the central Circular Road ring and MC/ULB data outside in peripheral wards. Completely avoids false deletions.
+                            </div>
+                        </div>
+
+                        <div id="group-dedup-params" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">Distance Tolerance (meters)</label>
+                                <input type="number" id="setting-distance-tol" class="form-control" value="2.0" step="0.5" min="0.1" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Minimum Overlap (%)</label>
+                                <input type="number" id="setting-min-overlap" class="form-control" value="0" step="5" min="0" max="100" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Max Direction Difference (degrees)</label>
+                                <input type="number" id="setting-max-dir" class="form-control" value="30" step="5" min="0" max="90" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Primary Road Source Priority</label>
+                                <select id="setting-primary-source" class="form-select">
+                                    <option value="longer" selected>Whichever is Longer (ULB vs Reference)</option>
+                                    <option value="ulb">ULB Roads (Primary Municipal)</option>
+                                    <option value="reference">Existing Reference Roads</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 0.82rem; cursor: pointer;">
+                                <input type="checkbox" id="setting-clip-boundary" checked />
+                                Clip & clean roads outside Rewari Ward Boundary
+                            </label>
+                        </div>
+
+                        <button id="btn-run-dedup" class="btn btn-primary btn-block">⚡ Generate Clean Road Network</button>
+                    </div>
+
+                    <!-- Deduplication Summary -->
+                    <div class="card-section">
+                        <div class="card-title">Road Network Cleaning Results</div>
+                        <table class="data-table">
+                            <tr><td>Original ULB Roads:</td><td id="stat-orig-ulb" class="text-end">0</td></tr>
+                            <tr><td>Existing Reference Roads:</td><td id="stat-orig-ref" class="text-end">0</td></tr>
+                            <tr><td>Duplicates Directly Removed:</td><td id="stat-possible-dups" class="text-end text-warning">0</td></tr>
+                            <tr><td><b>Clean Road Network inside Wards:</b></td><td id="stat-clean-roads" class="text-end text-success"><b>0 km</b></td></tr>
+                        </table>
+                    </div>
+
+                    <!-- Directly Removed Duplicate Records -->
+                    <div class="card-section">
+                        <div class="card-title">Directly Removed Duplicate Records</div>
+                        <div id="duplicate-groups-list" style="max-height: 250px; overflow-y: auto;">
+                            <div class="text-center text-muted py-3">Run duplicate analysis to view candidate pairs.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Sweeper Beats -->
+                <div id="panel-beats" class="control-panel-tab">
+                    <div class="card-section">
+                        <div class="card-title">
+                            <span>Sweeper Beat Directory (30 Beats)</span>
+                            <button id="btn-auto-beats" class="btn btn-sm btn-primary" title="Regenerate 30 continuous non-overlapping beats">⚡ Generate 30 Non-Overlapping Beats</button>
+                        </div>
+                        <div class="d-flex gap-2 my-2">
+                            <button id="btn-toggle-edit-beats" class="btn btn-sm btn-warning" style="flex:1;">✏️ Edit Beat Boundaries (Drag Vertices)</button>
+                            <button id="btn-save-edit-beats" class="btn btn-sm btn-success" style="flex:1; display:none;">💾 Done Editing Boundaries</button>
+                        </div>
+                        <div class="small text-muted mb-2" style="font-size:0.78rem; line-height:1.35;">
+                            ✨ <b>Free-Form Continuous Beats:</b> 0% overlap, divided along major arteries (Circular Rd, Railway Line, Delhi Rd, Bawal Rd). Sized for <b>10–12 sweepers per beat</b> (~10.5 km of road per beat). Click <i>"Edit Beat Boundaries"</i> to freely reshape borders by dragging vertices on the map!
+                        </div>
+
+                        <div style="max-height: 420px; overflow-y: auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Beat</th>
+                                        <th>Sector / Corridors</th>
+                                        <th>Length</th>
+                                        <th>Sweepers</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="beats-table-body">
+                                    <tr><td colspan="5" class="text-center text-muted">Loading 30 free-form sweeper beats...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Dashboard -->
+                <div id="panel-dash" class="control-panel-tab">
+                    <div class="dashboard-grid">
+                        <div class="dash-card">
+                            <div class="dash-card-lbl">Clean Road Network</div>
+                            <div id="dash-clean-road-length" class="dash-card-val">0.0 km</div>
+                        </div>
+                        <div class="dash-card">
+                            <div class="dash-card-lbl">Total Sweeper Beats</div>
+                            <div id="dash-total-beats" class="dash-card-val" style="color: var(--accent-purple);">0</div>
+                        </div>
+                        <div class="dash-card">
+                            <div class="dash-card-lbl">Avg Road / Beat</div>
+                            <div id="dash-avg-length-beat" class="dash-card-val" style="color: var(--accent-green);">0.0 km</div>
+                        </div>
+                        <div class="dash-card">
+                            <div class="dash-card-lbl">Total Covered Length</div>
+                            <div id="dash-covered-road-length" class="dash-card-val" style="color: var(--accent-warning);">0.0 km</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Export & Save -->
+                <div id="panel-export" class="control-panel-tab">
+                    <div class="card-section">
+                        <div class="card-title">Google Earth Exports</div>
+                        <p class="small text-muted mb-2">Export clean roads, ward boundaries, and beat folders as styled KML/KMZ files.</p>
+                        <div class="d-flex gap-2">
+                            <button id="btn-export-kml" class="btn btn-primary flex-1">🌍 Export KML</button>
+                            <button id="btn-export-kmz" class="btn btn-outline flex-1">📦 Export KMZ</button>
+                        </div>
+                    </div>
+
+                    <div class="card-section">
+                        <div class="card-title">Spreadsheet Export</div>
+                        <p class="small text-muted mb-2">Export beat names, ward numbers, road lengths, and remarks to Excel/CSV.</p>
+                        <button id="btn-export-excel" class="btn btn-success btn-block">📊 Export Excel / CSV</button>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Leaflet Map Container -->
+        <main class="map-container">
+            <div id="map"></div>
+
+            <!-- Floating Overlay Card for Drawn Beat Area -->
+            <div id="drawn-area-card" class="floating-overlay-card hidden">
+                <div class="card-title" style="margin-bottom: 0.5rem;">
+                    <span>📐 Selected Sweeper Area</span>
+                    <button id="btn-clear-draw" class="btn btn-sm btn-outline" style="padding: 2px 6px;">✕</button>
+                </div>
+
+                <div class="d-flex justify-between small mb-2">
+                    <span class="text-muted">Clean Road Length:</span>
+                    <strong id="stat-drawn-length" class="text-success">0.0 km</strong>
+                </div>
+                <div class="d-flex justify-between small mb-2">
+                    <span class="text-muted">Road Segments:</span>
+                    <strong id="stat-drawn-segments">0</strong>
+                </div>
+                <div class="d-flex justify-between small mb-2">
+                    <span class="text-muted">Intersecting Ward(s):</span>
+                    <strong id="stat-drawn-wards">Auto</strong>
+                </div>
+                <div class="d-flex justify-between small mb-2">
+                    <span class="text-muted">Polygon Area:</span>
+                    <strong id="stat-drawn-area">0.0 km²</strong>
+                </div>
+
+                <hr style="border-color: var(--border-color); margin: 0.5rem 0;" />
+
+                <div class="form-group mb-2">
+                    <label class="form-label">Beat Name</label>
+                    <input type="text" id="input-beat-name" class="form-control" placeholder="e.g. Beat 01" />
+                </div>
+                <div class="form-group mb-2">
+                    <label class="form-label">Ward No.</label>
+                    <input type="text" id="input-beat-ward" class="form-control" placeholder="Auto / Ward 12" />
+                </div>
+                <div class="form-group mb-2">
+                    <label class="form-label">Remarks</label>
+                    <input type="text" id="input-beat-remarks" class="form-control" placeholder="Optional notes..." />
+                </div>
+
+                <button id="btn-save-beat" class="btn btn-success btn-block mt-2">💾 Save Sweeper Beat</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- External GIS & Parsing Libraries via CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.14.2/dist/leaflet-geoman.min.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- Application Modules -->
+    <script src="js/kml-parser.js"></script>
+    <script src="js/road-cleaner.js"></script>
+    <script src="js/boundary-clipper.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/beat-manager.js"></script>
+    <script src="js/kml-export.js"></script>
+    <script src="js/project-manager.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

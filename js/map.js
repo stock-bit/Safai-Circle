@@ -63,12 +63,24 @@ window.MapController = (function () {
             attribution: '© <a href="https://carto.com/" target="_blank">CARTO</a>'
         });
 
-        const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        const googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '© Google Satellite'
+        });
+
+        const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '© Google Satellite'
+        });
+
+        const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}', {
             maxZoom: 19,
             attribution: 'Tiles © Esri'
         });
 
-        const esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        const esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{x}/{y}', {
             maxZoom: 19,
             attribution: 'Tiles © Esri'
         });
@@ -100,19 +112,21 @@ window.MapController = (function () {
         });
         const offlineGrid = new OfflineGridLayer({ attribution: 'Offline Local Canvas Grid' });
 
-        // Default Basemap (use Carto Voyager for reliable high-speed rendering)
-        cartoVoyager.addTo(map);
+        // Default Basemap: Google Hybrid Satellite (crystal clear imagery + streets/labels)
+        googleHybrid.addTo(map);
 
         const baseMaps = {
-            "CARTO Maps": cartoVoyager,
+            "Google Satellite (Hybrid)": googleHybrid,
+            "Google Satellite (Pure)": googleSatellite,
+            "Esri Satellite": esriSatellite,
+            "CARTO Voyager": cartoVoyager,
             "OpenStreetMap": osm,
-            "Satellite (Esri)": satellite,
-            "Esri Street Map": esriStreet,
+            "Esri Streets": esriStreet,
             "Offline Grid": offlineGrid
         };
 
         // Fallback handler if a tile fails to load
-        [osm, cartoVoyager, satellite, esriStreet].forEach(layer => {
+        [googleHybrid, googleSatellite, esriSatellite, osm, cartoVoyager, esriStreet].forEach(layer => {
             layer.on('tileerror', function (error) {
                 console.warn('Tile load error for layer, falling back if needed:', error);
             });
@@ -383,11 +397,14 @@ window.MapController = (function () {
      * Render Sweeper Beats Layer
      */
     let isBeatEditingActive = false;
+    let showBeatLabels = false; // Default FALSE: keeps map clean so beats and satellite view are clearly visible!
+    let currentBeatsList = [];
 
     /**
-     * Render Sweeper Beats Layer with Geoman Boundary Editing Support
+     * Render Sweeper Beats Layer with Geoman Boundary Editing & Allotment Support
      */
     function renderBeats(beatsList) {
+        currentBeatsList = beatsList || [];
         layers.beats.clearLayers();
         if (!beatsList || beatsList.length === 0) return;
 
@@ -433,6 +450,16 @@ window.MapController = (function () {
 
                             const sw = beat.sweepers || 11;
                             layer.setTooltipContent(`<b>${beat.name}</b><br>${beat.length_km} km (${sw} Sw.)`);
+                            if (window.BeatManager && window.BeatManager.saveToLocalStorage) {
+                                window.BeatManager.saveToLocalStorage();
+                            }
+                            if (window.SupabaseSync && window.SupabaseSync.saveBeat) {
+                                window.SupabaseSync.saveBeat(beat).then(success => {
+                                    if (success && window.App && window.App.showToast) {
+                                        window.App.showToast(`☁️ Updated boundary & road length saved to Supabase: ${beat.name} (${beat.length_km} km)`, 'success');
+                                    }
+                                }).catch(e => console.warn('Supabase sync error on pm:edit:', e));
+                            }
                             if (window.App && window.App.refreshBeatsUI) {
                                 window.App.refreshBeatsUI(false);
                             }
@@ -441,24 +468,30 @@ window.MapController = (function () {
 
                     const swCount = beat.sweepers || 11;
                     const dailyTarget = Math.round((beat.length_km * 1000) / swCount);
+                    const darogaInfo = beat.darogaName ? `<b>Sanitary Daroga:</b> ${beat.darogaName} ${beat.darogaPhone ? '(' + beat.darogaPhone + ')' : ''}` : `<span class="text-muted"><i>Daroga: Not assigned</i></span>`;
+                    const workersSnippet = beat.workers ? `<p style="margin:2px 0; font-size:0.75rem; color:#94a3b8;"><b>Allotted:</b> ${beat.workers.length > 60 ? beat.workers.substring(0, 60) + '...' : beat.workers}</p>` : '';
 
                     layer.bindPopup(`
-                        <div class="beat-popup">
-                            <h4 style="color:${color}; margin:0 0 5px 0;">${beat.name}</h4>
-                            <p style="margin:2px 0;"><b>Category:</b> ${beat.ward || 'Cross-Ward Sector'}</p>
+                        <div class="beat-popup" style="min-width: 240px;">
+                            <h4 style="color:${color}; margin:0 0 6px 0; font-size:1.05rem;">${beat.name}</h4>
+                            <p style="margin:2px 0;"><b>Corridors/Ward:</b> ${beat.ward || 'Cross-Ward Sector'}</p>
                             <p style="margin:2px 0;"><b>Road Length:</b> <b>${beat.length_km} km</b></p>
                             <p style="margin:2px 0;"><b>Workforce Deployed:</b> <b>${swCount} Sweepers</b> (~${dailyTarget}m/day per worker)</p>
-                            <p style="margin:2px 0;"><b>Streets:</b> ${beat.segment_count || 0} segments</p>
-                            <p style="margin:2px 0;"><b>Boundary:</b> Continuous Non-Overlapping Free-Form</p>
-                            <div style="margin-top:8px;">
-                                <button class="btn btn-sm btn-warning" onclick="MapController.enableSingleBeatEdit('${beat.id}')">✏️ Drag Vertices</button>
+                            <p style="margin:2px 0;">${darogaInfo}</p>
+                            ${workersSnippet}
+                            <p style="margin:2px 0; font-size:0.75rem;"><b>Streets:</b> ${beat.segment_count || 0} segments | ${beat.area_km2 || 0} km²</p>
+                            <div style="margin-top:10px; display:flex; gap:6px;">
+                                <button class="btn btn-sm btn-primary" style="flex:1;" onclick="App.openBeatAllotmentModal('${beat.id}')">✏️ Edit Allotment</button>
+                                <button class="btn btn-sm btn-warning" style="flex:1;" onclick="MapController.enableSingleBeatEdit('${beat.id}')">🎯 Drag Borders</button>
                             </div>
                         </div>
                     `);
 
+                    // Tooltip display: If showBeatLabels is true, make it permanent; otherwise sticky on hover!
                     layer.bindTooltip(`<b>${beat.name}</b><br>${beat.length_km} km (${swCount} Sw.)`, {
-                        permanent: true,
-                        direction: 'center',
+                        permanent: showBeatLabels,
+                        sticky: !showBeatLabels,
+                        direction: showBeatLabels ? 'center' : 'top',
                         className: 'beat-label'
                     });
 
@@ -470,6 +503,19 @@ window.MapController = (function () {
 
             layers.beats.addLayer(leafletLayer);
         });
+    }
+
+    /**
+     * Toggle visibility of permanent Beat Labels across map
+     */
+    function toggleBeatLabels(show) {
+        if (typeof show === 'boolean') {
+            showBeatLabels = show;
+        } else {
+            showBeatLabels = !showBeatLabels;
+        }
+        renderBeats(currentBeatsList);
+        return showBeatLabels;
     }
 
     /**
@@ -523,6 +569,8 @@ window.MapController = (function () {
         renderCleanRoads,
         renderDuplicateRoads,
         renderBeats,
+        toggleBeatLabels,
+        isBeatLabelsVisible: () => showBeatLabels,
         toggleBeatsEditMode,
         enableSingleBeatEdit,
         isBeatEditingActive: () => isBeatEditingActive,

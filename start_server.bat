@@ -1,10 +1,8 @@
 @echo off
 echo ========================================================
 echo   Rewari Sweeper Beat Planning System
-echo   Starting Local GIS Server...
+echo   Starting Local GIS Server with Auto-Save Support...
 echo ========================================================
 echo.
-echo Opening system in your default browser at http://localhost:8000
-start http://localhost:8000
-python -m http.server 8000
+python server.py
 pause

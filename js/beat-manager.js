@@ -24,14 +24,61 @@ window.BeatManager = (function () {
             segment_count: Number(beatData.segment_count || 0),
             sweepers: Number(beatData.sweepers || 11),
             dailyTargetMeters: Number(beatData.dailyTargetMeters || 600),
+            darogaName: beatData.darogaName || '',
+            darogaPhone: beatData.darogaPhone || '',
+            workers: beatData.workers || '',
             color: beatData.color || null,
             remarks: beatData.remarks || '',
             polygonGeoJSON: beatData.polygonGeoJSON || null,
-            createdAt: new Date().toISOString()
+            createdAt: beatData.createdAt || new Date().toISOString()
         };
 
         beats.push(newBeat);
+        saveToLocalStorage();
+        if (window.SupabaseSync && window.SupabaseSync.saveBeat) {
+            window.SupabaseSync.saveBeat(newBeat).catch(e => console.warn('Supabase sync error on addBeat:', e));
+        }
         return newBeat;
+    }
+
+    /**
+     * Save current beats array to localStorage
+     */
+    function saveToLocalStorage() {
+        try {
+            localStorage.setItem('rewari_beats_saved_state', JSON.stringify(beats));
+        } catch (e) {
+            console.warn('Could not save beats to localStorage:', e);
+        }
+    }
+
+    /**
+     * Load beats array from localStorage
+     */
+    function loadFromLocalStorage() {
+        try {
+            const data = localStorage.getItem('rewari_beats_saved_state');
+            if (data) {
+                const parsed = JSON.parse(data);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    beats = parsed;
+                    beatCounter = beats.length + 1;
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.warn('Could not load beats from localStorage:', e);
+        }
+        return false;
+    }
+
+    /**
+     * Clear saved beats from localStorage
+     */
+    function clearLocalStorage() {
+        try {
+            localStorage.removeItem('rewari_beats_saved_state');
+        } catch (e) {}
     }
 
     /**
@@ -51,11 +98,15 @@ window.BeatManager = (function () {
                 segment_count: props.roadCount || 0,
                 sweepers: props.sweepers || 11,
                 dailyTargetMeters: props.dailyTargetMeters || 600,
+                darogaName: props.darogaName || '',
+                darogaPhone: props.darogaPhone || '',
+                workers: props.workers || '',
                 color: props.color || null,
                 remarks: props.remarks || 'Continuous non-overlapping free-form beat',
                 polygonGeoJSON: f
             });
         });
+        saveToLocalStorage();
         return getBeats();
     }
 
@@ -66,6 +117,13 @@ window.BeatManager = (function () {
         const index = beats.findIndex(b => b.id === id);
         if (index !== -1) {
             beats[index] = { ...beats[index], ...updatedFields };
+            if (beats[index].sweepers && beats[index].length_km) {
+                beats[index].dailyTargetMeters = Math.round((beats[index].length_km * 1000) / beats[index].sweepers);
+            }
+            saveToLocalStorage();
+            if (window.SupabaseSync && window.SupabaseSync.saveBeat) {
+                window.SupabaseSync.saveBeat(beats[index]).catch(e => console.warn('Supabase sync error on updateBeat:', e));
+            }
             return beats[index];
         }
         return null;
@@ -76,6 +134,10 @@ window.BeatManager = (function () {
      */
     function deleteBeat(id) {
         beats = beats.filter(b => b.id !== id);
+        saveToLocalStorage();
+        if (window.SupabaseSync && window.SupabaseSync.deleteBeat) {
+            window.SupabaseSync.deleteBeat(id).catch(e => console.warn('Supabase delete error on deleteBeat:', e));
+        }
     }
 
     /**
@@ -84,6 +146,7 @@ window.BeatManager = (function () {
     function clearAllBeats() {
         beats = [];
         beatCounter = 1;
+        saveToLocalStorage();
     }
 
     /**
@@ -321,6 +384,16 @@ window.BeatManager = (function () {
         return getBeats();
     }
 
+    /**
+     * Push all beats in bulk to Supabase Cloud
+     */
+    async function syncAllToSupabase() {
+        if (window.SupabaseSync && window.SupabaseSync.saveAllBeats) {
+            return await window.SupabaseSync.saveAllBeats(beats);
+        }
+        return false;
+    }
+
     return {
         addBeat,
         updateBeat,
@@ -330,6 +403,10 @@ window.BeatManager = (function () {
         setBeats,
         getDashboardStats,
         generateBalancedBeats,
-        loadFreeformBeats
+        loadFreeformBeats,
+        saveToLocalStorage,
+        loadFromLocalStorage,
+        clearLocalStorage,
+        syncAllToSupabase
     };
 })();

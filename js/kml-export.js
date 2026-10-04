@@ -64,14 +64,21 @@ window.KMLExport = (function () {
             beats.forEach(beat => {
                 xml += `      <Folder>\n`;
                 xml += `        <name>${escapeXML(beat.name)}</name>\n`;
-                xml += `        <description>Ward: ${escapeXML(beat.ward)} | Road Length: ${beat.length_km} km | Area: ${beat.area_km2} km²</description>\n`;
+                const sw = beat.sweepers || 11;
+                const target = beat.dailyTargetMeters || Math.round((beat.length_km * 1000) / sw);
+                const daroga = beat.darogaName ? `${escapeXML(beat.darogaName)} (${escapeXML(beat.darogaPhone || 'No Phone')})` : 'Unassigned';
+                const roster = beat.workers ? `<br/><b>Allotted Sweepers:</b><br/>${escapeXML(beat.workers).replace(/\n/g, '<br/>')}` : '';
+
+                xml += `        <description>Ward/Sector: ${escapeXML(beat.ward || 'Sector')} | Road Length: ${beat.length_km} km | Workforce: ${sw} Sweepers | Daroga: ${daroga}</description>\n`;
                 
                 if (beat.polygonGeoJSON) {
                     const desc = `
 <b>Beat:</b> ${escapeXML(beat.name)}<br/>
-<b>Ward:</b> ${escapeXML(beat.ward)}<br/>
-<b>Approx. Road Length:</b> ${beat.length_km} km<br/>
-<b>Area:</b> ${beat.area_km2} km²<br/>
+<b>Sector/Ward:</b> ${escapeXML(beat.ward || 'Sector')}<br/>
+<b>Road Length:</b> ${beat.length_km} km<br/>
+<b>Workforce Deployed:</b> ${sw} Sweepers (~${target}m/day target)<br/>
+<b>Sanitary Daroga:</b> ${daroga}<br/>
+${roster}
 <b>Remarks:</b> ${escapeXML(beat.remarks || 'None')}
 `;
                     xml += formatFeatureToKML(beat.polygonGeoJSON, beat.name, 'beatStyleDefault', desc);
@@ -154,16 +161,21 @@ window.KMLExport = (function () {
      */
     function exportToExcelOrCSV(beats, filename = 'Rewari_Sweeper_Beats.csv') {
         const rows = [
-            ['Beat Name', 'Ward No.', 'Road Length (km)', 'Area (km²)', 'Road Segments', 'Remarks', 'Created Date']
+            ['Beat Name', 'Sector / Ward', 'Road Length (km)', 'Sweepers Deployed', 'Daily Target (m/sweeper)', 'Daroga / Jamadar', 'Daroga Phone', 'Allotted Sweepers / Workers', 'Remarks', 'Created Date']
         ];
 
         beats.forEach(b => {
+            const sw = b.sweepers || 11;
+            const target = b.dailyTargetMeters || Math.round((b.length_km * 1000) / sw);
             rows.push([
                 b.name,
-                b.ward,
+                b.ward || 'Cross-Ward Sector',
                 b.length_km,
-                b.area_km2,
-                b.segment_count || 0,
+                sw,
+                `~${target} m`,
+                b.darogaName || 'Unassigned',
+                b.darogaPhone || '',
+                b.workers || '',
                 b.remarks || '',
                 b.createdAt ? new Date(b.createdAt).toLocaleDateString() : ''
             ]);

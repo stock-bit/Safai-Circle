@@ -27,6 +27,16 @@
         </div>
 
         <div class="header-actions">
+            <span id="cloud-sync-badge" class="badge" style="background:rgba(16, 185, 129, 0.2); border:1px solid #10b981; color:#34d399; font-size:0.75rem; display:inline-flex; align-items:center; gap:5px; padding:4px 8px;" title="Connected to Supabase Cloud Database: changes save and sync live across all devices">
+                <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>
+                ☁️ Supabase Live
+            </span>
+            <button id="btn-jump-roster" class="btn btn-sm btn-outline" title="Scroll down to master beat and daroga allotment table">📋 Allotment Roster</button>
+            <button id="btn-header-gh-export" class="btn btn-sm btn-success" title="Download updated files ready to commit to GitHub Pages">🚀 Export for GitHub</button>
+            <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;" title="Import customized beat boundaries or plan file">
+                📥 Import Plan
+                <input type="file" id="input-import-beats" accept=".geojson,.json,.kml" style="display: none;" />
+            </label>
             <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;">
                 📂 Load Project
                 <input type="file" id="project-file-input" accept=".json" style="display: none;" />
@@ -41,9 +51,9 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <nav class="nav-tabs">
-                <button class="nav-tab active" data-target="panel-data">Source Data</button>
+                <button class="nav-tab" data-target="panel-data">Source Data</button>
                 <button class="nav-tab" data-target="panel-dedup">Road Cleaning</button>
-                <button class="nav-tab" data-target="panel-beats">Sweeper Beats</button>
+                <button class="nav-tab active" data-target="panel-beats">Sweeper Beats</button>
                 <button class="nav-tab" data-target="panel-dash">Dashboard</button>
                 <button class="nav-tab" data-target="panel-export">Export & Save</button>
             </nav>
@@ -51,7 +61,7 @@
             <div class="panel-body">
                 
                 <!-- Tab 1: Source Data -->
-                <div id="panel-data" class="control-panel-tab active">
+                <div id="panel-data" class="control-panel-tab">
                     <div class="card-section">
                         <div class="card-title">
                             <span>1. Ward Boundaries (KMZ / KML)</span>
@@ -159,18 +169,23 @@
                 </div>
 
                 <!-- Tab 3: Sweeper Beats -->
-                <div id="panel-beats" class="control-panel-tab">
+                <div id="panel-beats" class="control-panel-tab active">
                     <div class="card-section">
                         <div class="card-title">
                             <span>Sweeper Beat Directory (30 Beats)</span>
-                            <button id="btn-auto-beats" class="btn btn-sm btn-primary" title="Regenerate 30 continuous non-overlapping beats">⚡ Generate 30 Non-Overlapping Beats</button>
+                            <button id="btn-auto-beats" class="btn btn-sm btn-primary" title="Regenerate 30 continuous non-overlapping beats">⚡ Generate 30 Beats</button>
                         </div>
                         <div class="d-flex gap-2 my-2">
-                            <button id="btn-toggle-edit-beats" class="btn btn-sm btn-warning" style="flex:1;">✏️ Edit Beat Boundaries (Drag Vertices)</button>
+                            <button id="btn-toggle-edit-beats" class="btn btn-sm btn-warning" style="flex:1;">✏️ Edit Boundaries (Drag Vertices)</button>
                             <button id="btn-save-edit-beats" class="btn btn-sm btn-success" style="flex:1; display:none;">💾 Done Editing Boundaries</button>
+                            <button id="btn-save-kml-disk" class="btn btn-sm btn-primary" style="flex:1;" title="Save updated boundaries and daroga roster directly to KML & GeoJSON files">💾 Save to KML & Files</button>
+                        </div>
+                        <div class="d-flex gap-2 mb-2">
+                            <button id="btn-toggle-beat-labels" class="btn btn-sm btn-outline" style="flex:1;" title="Show or hide floating text tags over map">🏷️ Show/Hide Map Labels</button>
+                            <button id="btn-reset-default-beats" class="btn btn-sm btn-outline-danger" style="flex:1;" title="Reset customized boundaries back to default 30 beats">🔄 Reset to Defaults</button>
                         </div>
                         <div class="small text-muted mb-2" style="font-size:0.78rem; line-height:1.35;">
-                            ✨ <b>Free-Form Continuous Beats:</b> 0% overlap, divided along major arteries (Circular Rd, Railway Line, Delhi Rd, Bawal Rd). Sized for <b>10–12 sweepers per beat</b> (~10.5 km of road per beat). Click <i>"Edit Beat Boundaries"</i> to freely reshape borders by dragging vertices on the map!
+                            ✨ <b>Free-Form Continuous Beats:</b> 0% overlap, divided along major arteries (Circular Rd, Railway Line, Delhi Rd, Bawal Rd). Sized for <b>10–12 sweepers per beat</b> (~10.5 km of road per beat).
                         </div>
 
                         <div style="max-height: 420px; overflow-y: auto;">
@@ -181,11 +196,12 @@
                                         <th>Sector / Corridors</th>
                                         <th>Length</th>
                                         <th>Sweepers</th>
+                                        <th>Daroga / Incharge</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="beats-table-body">
-                                    <tr><td colspan="5" class="text-center text-muted">Loading 30 free-form sweeper beats...</td></tr>
+                                    <tr><td colspan="6" class="text-center text-muted">Loading 30 free-form sweeper beats...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -237,7 +253,19 @@
 
         <!-- Leaflet Map Container -->
         <main class="map-container">
+            <!-- Floating Map Toolbar -->
+            <div class="map-toolbar-top">
+                <button id="map-btn-toggle-labels" class="map-tool-btn" title="Show or hide floating text tags over map">🏷️ Show Labels</button>
+                <button id="map-btn-toggle-edit" class="map-tool-btn" title="Enable vertex dragging on beat borders">✏️ Edit Borders</button>
+                <button id="map-btn-view-roster" class="map-tool-btn" title="Scroll down to Master Allotment Roster Table below map">📋 Allotment Table (30 Beats)</button>
+            </div>
+
             <div id="map"></div>
+
+            <!-- Floating Jump Button at bottom of map -->
+            <button id="btn-scroll-to-roster" class="floating-roster-jump-btn" title="View & edit full Daroga & sweeper allotment table below map">
+                ⬇️ Scroll Down to Allotment Table & Daroga Records (30 Beats)
+            </button>
 
             <!-- Floating Overlay Card for Drawn Beat Area -->
             <div id="drawn-area-card" class="floating-overlay-card hidden">
@@ -280,6 +308,63 @@
 
                 <button id="btn-save-beat" class="btn btn-success btn-block mt-2">💾 Save Sweeper Beat</button>
             </div>
+
+            <!-- Master Beat Directory & Sanitary Daroga Allotment Roster Section Below Map -->
+            <section id="section-master-roster" class="master-roster-section">
+                <div class="master-roster-header">
+                    <div class="d-flex justify-between align-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; color:var(--text-primary); margin:0;">
+                                📋 Rewari Master Beat Directory & Sanitary Daroga Allotment Roster
+                            </h2>
+                            <div class="small text-muted mt-1">
+                                Complete municipal record of all 30 sweeper beats, road lengths, workforce allocations, Sanitary Daroga incharge, and worker rosters.
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button id="btn-sync-supabase" class="btn btn-sm btn-warning" title="Sync & pull latest beats & Daroga records from Supabase Cloud">☁️ Sync Cloud</button>
+                            <button id="btn-master-scroll-top" class="btn btn-sm btn-outline" title="Scroll back up to map">⬆️ Top Map</button>
+                            <button id="btn-master-gh-export" class="btn btn-sm btn-success" title="Download updated KML, GeoJSON & JS files to commit to GitHub Pages">🚀 Export for GitHub Pages</button>
+                            <button id="btn-master-save-kml" class="btn btn-sm btn-primary" title="Download updated KML for Google Earth">🌍 Download KML</button>
+                        </div>
+                    </div>
+
+                    <div class="master-stats-bar d-flex gap-2 mb-3">
+                        <div class="roster-stat-pill"><b>30</b> Total Beats</div>
+                        <div class="roster-stat-pill"><b id="roster-stat-road-length">310.1 km</b> Clean Roads</div>
+                        <div class="roster-stat-pill"><b id="roster-stat-workforce">328</b> Sweepers Deployed</div>
+                        <div class="roster-stat-pill"><b id="roster-stat-darogas">0</b> Darogas Assigned</div>
+                    </div>
+
+                    <div class="d-flex justify-between align-center mb-3 gap-2 flex-wrap">
+                        <input type="text" id="master-roster-search" class="form-control" style="max-width: 380px;" placeholder="🔍 Filter beat, sector, daroga name, or phone..." />
+                        <div class="small text-muted" style="font-size:0.8rem;">
+                            💡 Click <b>✏️ Edit Allotment</b> on any beat below to update Daroga, sweepers, or worker roster.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="master-table-wrapper">
+                    <table class="data-table master-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 140px;">Beat Name</th>
+                                <th style="width: 130px;">Sector / Ward</th>
+                                <th style="width: 95px;">Road Length</th>
+                                <th style="width: 110px;">Sweepers</th>
+                                <th style="width: 105px;">Daily Target</th>
+                                <th style="width: 180px;">Sanitary Daroga / Jamadar</th>
+                                <th style="width: 130px;">Daroga Phone</th>
+                                <th>Allotted Sweepers (Worker Roster)</th>
+                                <th style="width: 150px; text-align:center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-roster-tbody">
+                            <tr><td colspan="9" class="text-center text-muted py-3">Loading master beat directory...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -290,8 +375,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Application Modules -->
+    <script src="js/supabase-client.js"></script>
     <script src="js/kml-parser.js"></script>
     <script src="js/road-cleaner.js"></script>
     <script src="js/boundary-clipper.js"></script>
@@ -299,7 +386,114 @@
     <script src="js/beat-manager.js"></script>
     <script src="js/kml-export.js"></script>
     <script src="js/project-manager.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/rewari-data.js"></script>
+    <!-- Modal: Beat Details & Sweeper Allotment Record -->
+    <div id="modal-beat-allotment" class="modal-backdrop hidden">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="modal-beat-title">Beat Allotment & Supervision Record</h3>
+                <button class="modal-close-btn" id="btn-close-beat-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-beat-id" />
+                
+                <div class="form-group mb-2">
+                    <label class="form-label">Beat Name</label>
+                    <input type="text" id="edit-beat-name" class="form-control" />
+                </div>
 
+                <div class="form-row d-flex gap-2 mb-2">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Sector / Corridors / Ward</label>
+                        <input type="text" id="edit-beat-ward" class="form-control" />
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">No. of Sweepers Deployed</label>
+                        <input type="number" id="edit-beat-sweepers" class="form-control" min="1" max="50" />
+                    </div>
+                </div>
+
+                <div class="form-row d-flex gap-2 mb-2">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Sanitary Daroga / Jamadar Name</label>
+                        <input type="text" id="edit-beat-daroga" class="form-control" placeholder="e.g. Ramesh Kumar" />
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Daroga Phone Number</label>
+                        <input type="text" id="edit-beat-phone" class="form-control" placeholder="e.g. 9812345678" />
+                    </div>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label class="form-label">
+                        Allotted Sweepers / Worker Roster
+                        <span class="small text-muted">(Maintain records: names, Rehri numbers, mobile)</span>
+                    </label>
+                    <textarea id="edit-beat-workers" class="form-control" rows="5" placeholder="1. Worker Name - Rehri No. / Mobile&#10;2. Worker Name - Rehri No. / Mobile&#10;3. Worker Name..."></textarea>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label class="form-label">Muster Point Landmark / Remarks</label>
+                    <input type="text" id="edit-beat-remarks" class="form-control" placeholder="e.g. Morning Haziri at Jhajjar Chowk, 6:30 AM" />
+                </div>
+
+                <div class="d-flex justify-between small text-muted mt-2 p-2" style="background:var(--bg-dark); border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                    <span>Road Length: <b id="edit-beat-length-display" class="text-white">0 km</b></span>
+                    <span>Daily Target per Sweeper: <b id="edit-beat-target-display" class="text-white">~0 m/day</b></span>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-between mt-3">
+                <button type="button" class="btn btn-outline" id="btn-cancel-beat-modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="btn-save-beat-allotment">💾 Save Allotment Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: GitHub Pages Export & Sync Helper -->
+    <div id="modal-gh-export" class="modal-backdrop hidden">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>🚀 Publish & Deploy Changes to GitHub Pages</h3>
+                <button class="modal-close-btn" id="btn-close-gh-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="card-section mb-3" style="background:#0f172a; border-left:4px solid var(--accent-green);">
+                    <div style="font-weight:600; color:var(--accent-green); margin-bottom:4px;">✅ Saved Locally in this Browser</div>
+                    <div class="small text-muted">
+                        All your customized boundaries, Darogas, phones, and worker rosters are already saved in this browser's <code>localStorage</code>. Whenever you open this link on this computer, your customized plan will load automatically.
+                    </div>
+                </div>
+
+                <div class="card-section mb-3">
+                    <div class="card-title">Option 1: 1-Click Update Package (Recommended)</div>
+                    <p class="small text-muted mb-2">
+                        Download a pre-packaged ZIP containing <code>Rewari_30_Sweeper_Beats_Freeform.kml</code>, <code>Rewari_30_Sweeper_Beats_Freeform.geojson</code>, and <code>js/rewari-data.js</code>.
+                    </p>
+                    <button id="btn-download-gh-zip" class="btn btn-success btn-block mb-2">📦 Download GitHub Update ZIP</button>
+                    <div class="small text-muted" style="font-size:0.78rem;">
+                        <b>How to deploy:</b> Extract into your repository folder, then run <code>git add . && git commit -m "Update beats" && git push</code>. GitHub Pages updates automatically!
+                    </div>
+                </div>
+
+                <div class="card-section mb-2">
+                    <div class="card-title">Option 2: Direct GitHub Web Editor (No Git Required)</div>
+                    <p class="small text-muted mb-2">
+                        Don't have git installed? Click below to copy the updated <code>rewari-data.js</code> code, open GitHub in your browser, edit <code>js/rewari-data.js</code>, paste and commit!
+                    </p>
+                    <button id="btn-copy-gh-data" class="btn btn-outline btn-block mb-2">📋 Copy Updated rewari-data.js to Clipboard</button>
+                    <div class="small text-muted" style="font-size:0.78rem;">
+                        Also download the standalone updated KML for Google Earth:
+                    </div>
+                    <button id="btn-download-standalone-kml" class="btn btn-sm btn-outline mt-1">🌍 Download KML File</button>
+                </div>
+            </div>
+            <div class="modal-footer text-right">
+                <button type="button" class="btn btn-outline" id="btn-done-gh-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Orchestrator -->
+    <script src="js/app.js"></script>
 </body>
 </html>

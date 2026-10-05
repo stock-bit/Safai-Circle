@@ -37,8 +37,18 @@ window.KMLExport = (function () {
     </Style>
 `;
 
-        // 1. Ward Boundaries Folder
-        if (wards && wards.features) {
+        // Generate per-beat color styles
+        beats.forEach((b, idx) => {
+            const hex = b.color || '#2563eb';
+            const kmlCol = hexToKmlColor(hex);
+            xml += `    <Style id="beat_style_${idx + 1}">
+      <LineStyle><color>${kmlCol.line}</color><width>3</width></LineStyle>
+      <PolyStyle><color>${kmlCol.poly}</color><fill>1</fill><outline>1</outline></PolyStyle>
+    </Style>\n`;
+        });
+
+        // 1. Ward Boundaries Folder (Only included if specifically requested and beats are not standalone)
+        if (wards && wards.features && data.includeWards) {
             xml += `    <Folder>\n      <name>Ward Boundaries</name>\n`;
             wards.features.forEach((feat, idx) => {
                 const name = feat.properties.name || feat.properties.ward || `Ward ${idx + 1}`;
@@ -47,8 +57,8 @@ window.KMLExport = (function () {
             xml += `    </Folder>\n`;
         }
 
-        // 2. Clean Roads Folder
-        if (cleanRoads && cleanRoads.features) {
+        // 2. Clean Roads Folder (Only if requested)
+        if (cleanRoads && cleanRoads.features && data.includeCleanRoads) {
             xml += `    <Folder>\n      <name>Clean Road Network</name>\n`;
             cleanRoads.features.forEach((feat, idx) => {
                 const name = feat.properties.name || `Clean Road ${idx + 1}`;
@@ -58,10 +68,10 @@ window.KMLExport = (function () {
             xml += `    </Folder>\n`;
         }
 
-        // 3. Sweeper Beats Folders
+        // 3. Sweeper Beats Folders (Always strictly beats, 30 max)
         if (beats.length > 0) {
             xml += `    <Folder>\n      <name>Sweeper Beats</name>\n`;
-            beats.forEach(beat => {
+            beats.forEach((beat, idx) => {
                 xml += `      <Folder>\n`;
                 xml += `        <name>${escapeXML(beat.name)}</name>\n`;
                 const sw = beat.sweepers || 11;
@@ -81,7 +91,8 @@ window.KMLExport = (function () {
 ${roster}
 <b>Remarks:</b> ${escapeXML(beat.remarks || 'None')}
 `;
-                    xml += formatFeatureToKML(beat.polygonGeoJSON, beat.name, 'beatStyleDefault', desc);
+                    const beatStyleId = `beat_style_${idx + 1}`;
+                    xml += formatFeatureToKML(beat.polygonGeoJSON, `${beat.name} [Boundary]`, beatStyleId, desc);
                 }
 
                 xml += `      </Folder>\n`;
@@ -91,6 +102,24 @@ ${roster}
 
         xml += `  </Document>\n</kml>`;
         return xml;
+    }
+
+    /**
+     * Convert #RRGGBB hex to KML color format (AABBGGRR)
+     */
+    function hexToKmlColor(hex) {
+        let clean = hex.replace('#', '').trim();
+        if (clean.length === 3) {
+            clean = clean.split('').map(c => c + c).join('');
+        }
+        if (clean.length !== 6) clean = '2563eb';
+        const r = clean.substring(0, 2);
+        const g = clean.substring(2, 4);
+        const b = clean.substring(4, 6);
+        return {
+            line: `ff${b}${g}${r}`,
+            poly: `45${b}${g}${r}`
+        };
     }
 
     /**

@@ -619,8 +619,10 @@ window.App = (function () {
             btnDownloadStandaloneKml.addEventListener('click', () => {
                 KMLExport.downloadKMLOrKMZ({
                     beats: BeatManager.getBeats(),
-                    cleanRoads: state.cleanRoadsGeoJSON,
-                    wards: state.wardsGeoJSON
+                    cleanRoads: null,
+                    wards: null,
+                    includeWards: false,
+                    includeCleanRoads: false
                 }, 'Rewari_30_Sweeper_Beats_Freeform.kml', false);
             });
         }
@@ -630,8 +632,10 @@ window.App = (function () {
             btnMasterSaveKml.addEventListener('click', () => {
                 KMLExport.downloadKMLOrKMZ({
                     beats: BeatManager.getBeats(),
-                    cleanRoads: state.cleanRoadsGeoJSON,
-                    wards: state.wardsGeoJSON
+                    cleanRoads: null,
+                    wards: null,
+                    includeWards: false,
+                    includeCleanRoads: false
                 }, 'Rewari_30_Sweeper_Beats_Freeform.kml', false);
                 showToast('🌍 Downloaded updated KML for Google Earth!', 'success');
             });
@@ -666,12 +670,33 @@ window.App = (function () {
             });
         }
 
-        // Import Plan (GeoJSON / KML / JSON)
+        // Import Plan (GeoJSON / KML / KMZ / JSON)
         const inputImportBeats = document.getElementById('input-import-beats');
         if (inputImportBeats) {
             inputImportBeats.addEventListener('change', (e) => {
                 if (e.target.files && e.target.files[0]) {
                     handleImportPlan(e.target.files[0]);
+                }
+            });
+        }
+
+        const panelInputImportKml = document.getElementById('panel-input-import-kml');
+        if (panelInputImportKml) {
+            panelInputImportKml.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    handleImportPlan(e.target.files[0]);
+                }
+            });
+        }
+
+        // Toggle Clean Roads overlay on map
+        const mapBtnToggleRoads = document.getElementById('map-btn-toggle-roads');
+        if (mapBtnToggleRoads) {
+            mapBtnToggleRoads.addEventListener('click', () => {
+                if (MapController.toggleCleanRoadsLayer) {
+                    const isVisible = MapController.toggleCleanRoadsLayer();
+                    mapBtnToggleRoads.classList.toggle('active', isVisible);
+                    showToast(isVisible ? '🛣️ Clean Road Network visible on map' : '🛣️ Road layer hidden', 'info');
                 }
             });
         }
@@ -824,33 +849,67 @@ Instructions to update your GitHub Pages deployment:
     }
 
     /**
-     * Import customized GeoJSON, KML, or Project JSON
+     * Import customized GeoJSON, KML, KMZ, or Project JSON
+     * - Wipes previous KML/layers completely so nothing overlaps
+     * - Strictly extracts the 30 beat boundary polygons from the 'Sweeper Beats' folder
+     * - Excludes 'Ward Boundaries' folder so ward polygons do not overlap beats
+     * - Ignores LineStrings so no rainbow lines clutter the map
+     * - Immediately clips and calculates road length for beats (~900m/sweeper)
+     * - Resets old roster data for the new plan
      */
     async function handleImportPlan(file) {
         if (!file) return;
         showToast(`Importing ${file.name}...`, 'info');
         try {
+            // 1. Wipe previous layers so old KML datasets/lines/beats do not overlap or linger
+            if (MapController.clearAllLayersForNewImport) {
+                MapController.clearAllLayersForNewImport();
+            }
+
+            // Ensure baseline clean roads are available for spatial length calculations
+            if (!state.cleanRoadsGeoJSON && window.REWARI_CLEAN_ROADS) {
+                state.cleanRoadsGeoJSON = window.REWARI_CLEAN_ROADS;
+            }
+
+            let beatFeaturesCollection = null;
             const ext = file.name.split('.').pop().toLowerCase();
+
             if (ext === 'geojson' || ext === 'json') {
                 const text = await file.text();
                 const json = JSON.parse(text);
                 if (json.type === 'FeatureCollection' && json.features) {
-                    BeatManager.loadFreeformBeats(json);
+                    beatFeaturesCollection = json;
                 } else if (json.beats) {
-                    BeatManager.setBeats(json.beats);
-                    BeatManager.saveToLocalStorage();
+                    beatFeaturesCollection = { type: 'FeatureCollection', features: json.beats.map(b => b.polygonGeoJSON || b) };
                 } else {
                     showToast('Invalid GeoJSON/JSON structure', 'error');
                     return;
                 }
-            } else if (ext === 'kml') {
-                const text = await file.text();
-                const geojson = await KMLParser.parseFile(text, file.name);
-                BeatManager.loadFreeformBeats(geojson);
+            } else if (ext === 'kml' || ext === 'kmz') {
+                // Parse specifically for Sweeper Beats from the KML folders
+                beatFeaturesCollection = await KMLParser.parseSweeperBeatsFile(file, file.name);
+            } else {
+                showToast('Unsupported file type. Please upload .kml, .kmz, or .geojson', 'error');
+                return;
             }
+
+            if (!beatFeaturesCollection || !beatFeaturesCollection.features || beatFeaturesCollection.features.length === 0) {
+                showToast('No valid beat boundary polygons found in the file', 'warning');
+                return;
+            }
+
+            // 2. Load the beats (recalculates road lengths, sets sweepers @ ~900m, resets roster, syncs to Supabase)
+            BeatManager.loadFreeformBeats(beatFeaturesCollection);
+
+            // 3. Refresh UI & fit map to new beats
             refreshBeatsUI();
-            showToast(`Successfully imported plan from ${file.name}!`, 'success');
+            if (MapController.fitBeatsBounds) {
+                MapController.fitBeatsBounds();
+            }
+
+            showToast(`✅ Loaded ${BeatManager.getBeats().length} beats from ${file.name}! Road lengths computed (~900m/sweeper) & old data reset.`, 'success');
         } catch (e) {
+            console.error('Import error:', e);
             showToast('Failed to import file: ' + e.message, 'error');
         }
     }

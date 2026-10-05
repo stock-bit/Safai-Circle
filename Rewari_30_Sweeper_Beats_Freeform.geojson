@@ -10,11 +10,14 @@
         "beatNo": "Beat 01",
         "length_km": 10.09,
         "roadCount": 90,
-        "sweepers": 12,
-        "dailyTargetMeters": 840,
+        "sweepers": 11,
+        "dailyTargetMeters": 917,
         "color": "#e11d48",
         "type": "Inner Commercial Core",
-        "remarks": "12 Sweepers deployed (~840m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "11 Sweepers deployed (~917m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -65,11 +68,14 @@
         "beatNo": "Beat 02",
         "length_km": 10.28,
         "roadCount": 141,
-        "sweepers": 12,
-        "dailyTargetMeters": 856,
+        "sweepers": 11,
+        "dailyTargetMeters": 935,
         "color": "#ea580c",
         "type": "Inner Commercial Core",
-        "remarks": "12 Sweepers deployed (~856m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "11 Sweepers deployed (~935m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -112,11 +118,14 @@
         "beatNo": "Beat 03",
         "length_km": 10.14,
         "roadCount": 99,
-        "sweepers": 12,
-        "dailyTargetMeters": 844,
+        "sweepers": 11,
+        "dailyTargetMeters": 922,
         "color": "#d97706",
         "type": "Inner Commercial Core",
-        "remarks": "12 Sweepers deployed (~844m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "11 Sweepers deployed (~922m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -167,11 +176,14 @@
         "beatNo": "Beat 04",
         "length_km": 9.76,
         "roadCount": 96,
-        "sweepers": 12,
-        "dailyTargetMeters": 813,
+        "sweepers": 11,
+        "dailyTargetMeters": 887,
         "color": "#65a30d",
         "type": "Inner Commercial Core",
-        "remarks": "12 Sweepers deployed (~813m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "11 Sweepers deployed (~887m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -210,11 +222,14 @@
         "beatNo": "Beat 05",
         "length_km": 10.06,
         "roadCount": 109,
-        "sweepers": 12,
-        "dailyTargetMeters": 838,
+        "sweepers": 11,
+        "dailyTargetMeters": 915,
         "color": "#16a34a",
         "type": "Inner Commercial Core",
-        "remarks": "12 Sweepers deployed (~838m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "11 Sweepers deployed (~915m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -261,7 +276,10 @@
         "dailyTargetMeters": 894,
         "color": "#059669",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~894m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "10 Sweepers deployed (~894m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -308,11 +326,14 @@
         "beatNo": "Beat 07",
         "length_km": 10.77,
         "roadCount": 92,
-        "sweepers": 11,
-        "dailyTargetMeters": 978,
+        "sweepers": 12,
+        "dailyTargetMeters": 898,
         "color": "#0d9488",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~978m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~898m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -359,7 +380,10 @@
         "dailyTargetMeters": 939,
         "color": "#0891b2",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~939m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "10 Sweepers deployed (~939m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -407,10 +431,13 @@
         "length_km": 9.34,
         "roadCount": 73,
         "sweepers": 10,
-        "dailyTargetMeters": 933,
+        "dailyTargetMeters": 934,
         "color": "#0284c7",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~933m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "10 Sweepers deployed (~934m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -457,11 +484,14 @@
         "beatNo": "Beat 10",
         "length_km": 12.68,
         "roadCount": 86,
-        "sweepers": 11,
-        "dailyTargetMeters": 1152,
+        "sweepers": 14,
+        "dailyTargetMeters": 906,
         "color": "#2563eb",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1152m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "14 Sweepers deployed (~906m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -504,11 +534,14 @@
         "beatNo": "Beat 11",
         "length_km": 14.03,
         "roadCount": 109,
-        "sweepers": 11,
-        "dailyTargetMeters": 1275,
+        "sweepers": 16,
+        "dailyTargetMeters": 877,
         "color": "#4f46e5",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1275m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "16 Sweepers deployed (~877m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -555,11 +588,14 @@
         "beatNo": "Beat 12",
         "length_km": 10.51,
         "roadCount": 99,
-        "sweepers": 11,
-        "dailyTargetMeters": 955,
+        "sweepers": 12,
+        "dailyTargetMeters": 876,
         "color": "#7c3aed",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~955m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~876m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -606,11 +642,14 @@
         "beatNo": "Beat 13",
         "length_km": 10.98,
         "roadCount": 60,
-        "sweepers": 11,
-        "dailyTargetMeters": 997,
+        "sweepers": 12,
+        "dailyTargetMeters": 915,
         "color": "#9333ea",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~997m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~915m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -649,11 +688,14 @@
         "beatNo": "Beat 14",
         "length_km": 13.74,
         "roadCount": 93,
-        "sweepers": 11,
-        "dailyTargetMeters": 1249,
+        "sweepers": 15,
+        "dailyTargetMeters": 916,
         "color": "#c026d3",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1249m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "15 Sweepers deployed (~916m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -700,11 +742,14 @@
         "beatNo": "Beat 15",
         "length_km": 12.55,
         "roadCount": 94,
-        "sweepers": 11,
-        "dailyTargetMeters": 1140,
+        "sweepers": 14,
+        "dailyTargetMeters": 896,
         "color": "#db2777",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1140m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "14 Sweepers deployed (~896m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -755,11 +800,14 @@
         "beatNo": "Beat 16",
         "length_km": 10.86,
         "roadCount": 89,
-        "sweepers": 11,
-        "dailyTargetMeters": 987,
+        "sweepers": 12,
+        "dailyTargetMeters": 905,
         "color": "#e11d48",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~987m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~905m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -802,11 +850,14 @@
         "beatNo": "Beat 17",
         "length_km": 10.51,
         "roadCount": 87,
-        "sweepers": 11,
-        "dailyTargetMeters": 955,
+        "sweepers": 12,
+        "dailyTargetMeters": 876,
         "color": "#ea580c",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~955m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~876m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -849,11 +900,14 @@
         "beatNo": "Beat 18",
         "length_km": 10.55,
         "roadCount": 50,
-        "sweepers": 11,
-        "dailyTargetMeters": 959,
+        "sweepers": 12,
+        "dailyTargetMeters": 879,
         "color": "#d97706",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~959m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~879m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -896,11 +950,14 @@
         "beatNo": "Beat 19",
         "length_km": 5.57,
         "roadCount": 38,
-        "sweepers": 10,
-        "dailyTargetMeters": 557,
+        "sweepers": 6,
+        "dailyTargetMeters": 928,
         "color": "#65a30d",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~557m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "6 Sweepers deployed (~928m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -947,11 +1004,14 @@
         "beatNo": "Beat 20",
         "length_km": 6.19,
         "roadCount": 40,
-        "sweepers": 10,
-        "dailyTargetMeters": 618,
+        "sweepers": 7,
+        "dailyTargetMeters": 884,
         "color": "#16a34a",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~618m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "7 Sweepers deployed (~884m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -990,11 +1050,14 @@
         "beatNo": "Beat 21",
         "length_km": 10.58,
         "roadCount": 101,
-        "sweepers": 11,
-        "dailyTargetMeters": 962,
+        "sweepers": 12,
+        "dailyTargetMeters": 882,
         "color": "#059669",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~962m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "12 Sweepers deployed (~882m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1045,11 +1108,14 @@
         "beatNo": "Beat 22",
         "length_km": 8.33,
         "roadCount": 38,
-        "sweepers": 10,
-        "dailyTargetMeters": 833,
+        "sweepers": 9,
+        "dailyTargetMeters": 926,
         "color": "#0d9488",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~833m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "9 Sweepers deployed (~926m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1096,11 +1162,14 @@
         "beatNo": "Beat 23",
         "length_km": 6.8,
         "roadCount": 53,
-        "sweepers": 10,
-        "dailyTargetMeters": 679,
+        "sweepers": 8,
+        "dailyTargetMeters": 850,
         "color": "#0891b2",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~679m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "8 Sweepers deployed (~850m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1144,10 +1213,13 @@
         "length_km": 8.86,
         "roadCount": 74,
         "sweepers": 10,
-        "dailyTargetMeters": 885,
+        "dailyTargetMeters": 886,
         "color": "#0284c7",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~885m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "10 Sweepers deployed (~886m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1198,11 +1270,14 @@
         "beatNo": "Beat 25",
         "length_km": 7.96,
         "roadCount": 66,
-        "sweepers": 10,
-        "dailyTargetMeters": 796,
+        "sweepers": 9,
+        "dailyTargetMeters": 884,
         "color": "#2563eb",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~796m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "9 Sweepers deployed (~884m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1245,11 +1320,14 @@
         "beatNo": "Beat 26",
         "length_km": 12.99,
         "roadCount": 98,
-        "sweepers": 11,
-        "dailyTargetMeters": 1180,
+        "sweepers": 14,
+        "dailyTargetMeters": 928,
         "color": "#4f46e5",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1180m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "14 Sweepers deployed (~928m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1292,11 +1370,14 @@
         "beatNo": "Beat 27",
         "length_km": 11.83,
         "roadCount": 94,
-        "sweepers": 11,
-        "dailyTargetMeters": 1075,
+        "sweepers": 13,
+        "dailyTargetMeters": 910,
         "color": "#7c3aed",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1075m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "13 Sweepers deployed (~910m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1347,11 +1428,14 @@
         "beatNo": "Beat 28",
         "length_km": 14.97,
         "roadCount": 108,
-        "sweepers": 11,
-        "dailyTargetMeters": 1360,
+        "sweepers": 17,
+        "dailyTargetMeters": 881,
         "color": "#9333ea",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1360m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "17 Sweepers deployed (~881m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1398,11 +1482,14 @@
         "beatNo": "Beat 29",
         "length_km": 11.49,
         "roadCount": 112,
-        "sweepers": 11,
-        "dailyTargetMeters": 1044,
+        "sweepers": 13,
+        "dailyTargetMeters": 884,
         "color": "#c026d3",
         "type": "Outer Municipal Sector",
-        "remarks": "11 Sweepers deployed (~1044m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "13 Sweepers deployed (~884m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1445,7 +1532,10 @@
         "dailyTargetMeters": 936,
         "color": "#db2777",
         "type": "Outer Municipal Sector",
-        "remarks": "10 Sweepers deployed (~936m/day per worker). Formed along major corridors with continuous, non-overlapping boundary."
+        "remarks": "10 Sweepers deployed (~936m/day per worker). Formed along major corridors with continuous, non-overlapping boundary.",
+        "darogaName": "",
+        "darogaPhone": "",
+        "workers": ""
       },
       "geometry": {
         "type": "Polygon",

@@ -132,10 +132,10 @@ window.MapController = (function () {
             });
         });
 
-        // Create Layer Groups - Only Wards, Clean Roads, and Beats are active by default!
+        // Create Layer Groups - Only Wards and Beats are active by default for crystal clear map visibility
         layers.wards = L.layerGroup().addTo(map);
         layers.cleanRoads = L.layerGroup().addTo(map);
-        layers.beats = L.layerGroup().addTo(map);
+        layers.beats = L.featureGroup().addTo(map);
         layers.ulbRoads = L.layerGroup(); // Raw unclipped layers hidden by default
         layers.existingRoads = L.layerGroup(); // Raw unclipped layers hidden by default
         layers.duplicateRoads = L.layerGroup();
@@ -216,11 +216,12 @@ window.MapController = (function () {
      * Calculate exact road length clipped inside a polygon using Turf.js
      */
     function calculateRoadsInPolygon(polygonGeoJSON) {
-        if (!activeCleanRoadsGeoJSON || !activeCleanRoadsGeoJSON.features) {
+        const cleanRoads = activeCleanRoadsGeoJSON || window.REWARI_CLEAN_ROADS;
+        if (!cleanRoads || !cleanRoads.features || !cleanRoads.features.length) {
             return { length_km: 0, segment_count: 0, area_km2: 0, wards: [] };
         }
 
-        if (typeof turf === 'undefined') {
+        if (typeof turf === 'undefined' || !polygonGeoJSON) {
             return { length_km: 0, segment_count: 0, area_km2: 0, wards: [] };
         }
 
@@ -231,8 +232,9 @@ window.MapController = (function () {
         const polygonAreaKm2 = Number(turf.area(polygonGeoJSON) / 1000000).toFixed(2);
 
         // Check intersecting Wards
-        if (activeWardsGeoJSON && activeWardsGeoJSON.features) {
-            activeWardsGeoJSON.features.forEach(w => {
+        const wardsData = activeWardsGeoJSON || window.REWARI_WARDS;
+        if (wardsData && wardsData.features) {
+            wardsData.features.forEach(w => {
                 try {
                     if (turf.booleanIntersects(polygonGeoJSON, w)) {
                         const wNum = w.properties.ward || w.properties.Ward || w.properties.WARD || w.properties.name;
@@ -242,15 +244,28 @@ window.MapController = (function () {
             });
         }
 
+        // Convert polygon to LineString for splitting
+        let polyLine = null;
+        try {
+            polyLine = turf.polygonToLine(polygonGeoJSON);
+        } catch (e) {
+            polyLine = null;
+        }
+
         // Clip Clean Roads
-        activeCleanRoadsGeoJSON.features.forEach(road => {
+        cleanRoads.features.forEach(road => {
             try {
                 if (!turf.booleanIntersects(road, polygonGeoJSON)) return;
 
-                // Split or intersect road with polygon
-                const lineSplit = turf.lineSplit(road, polygonGeoJSON);
+                // Split road using boundary line
+                let lineSplit = null;
+                if (polyLine) {
+                    try {
+                        lineSplit = turf.lineSplit(road, polyLine);
+                    } catch (e) {}
+                }
 
-                if (lineSplit.features.length === 0) {
+                if (!lineSplit || !lineSplit.features || lineSplit.features.length === 0) {
                     // Check if whole line is inside
                     const coords = road.geometry.type === 'LineString' ? road.geometry.coordinates : road.geometry.coordinates[0];
                     const midPt = turf.point(coords[Math.floor(coords.length / 2)]);
@@ -261,6 +276,8 @@ window.MapController = (function () {
                     }
                 } else {
                     lineSplit.features.forEach(segment => {
+                        const segCoords = segment.geometry.coordinates;
+                        if (!segCoords || segCoords.length < 2) return;
                         const midPt = turf.along(segment, turf.length(segment) / 2, { units: 'kilometers' });
                         if (turf.booleanPointInPolygon(midPt, polygonGeoJSON)) {
                             const len = turf.length(segment, { units: 'kilometers' });
@@ -448,7 +465,10 @@ window.MapController = (function () {
                             beat.segment_count = roadCount;
                             beat.area_km2 = Number((turf.area(editedGeoJSON) / 1000000).toFixed(2));
 
-                            const sw = beat.sweepers || 11;
+                            // Allocate sweepers @ ~900m road per worker
+                            const sw = Math.max(1, Math.round((beat.length_km * 1000) / 900));
+                            beat.sweepers = sw;
+                            beat.dailyTargetMeters = Math.round((beat.length_km * 1000) / sw);
                             layer.setTooltipContent(`<b>${beat.name}</b><br>${beat.length_km} km (${sw} Sw.)`);
                             if (window.BeatManager && window.BeatManager.saveToLocalStorage) {
                                 window.BeatManager.saveToLocalStorage();
@@ -558,7 +578,48 @@ window.MapController = (function () {
      * Clear active drawing items
      */
     function clearDrawnItems() {
-        layers.drawItems.clearLayers();
+        if (layers.drawItems) layers.drawItems.clearLayers();
+    }
+
+    /**
+     * Clear all previous layers when importing a new KML/plan
+     * Wipes old beats, old lines, old raw datasets so they do not overlap
+     */
+    function clearAllLayersForNewImport() {
+        if (layers.beats) layers.beats.clearLayers();
+        if (layers.wards) layers.wards.clearLayers();
+        if (layers.ulbRoads) layers.ulbRoads.clearLayers();
+        if (layers.existingRoads) layers.existingRoads.clearLayers();
+        if (layers.duplicateRoads) layers.duplicateRoads.clearLayers();
+        if (layers.drawItems) layers.drawItems.clearLayers();
+    }
+
+    /**
+     * Fit map view to current beats bounds
+     */
+    function fitBeatsBounds() {
+        if (!map || !layers.beats || layers.beats.getLayers().length === 0) return;
+        try {
+            const bounds = layers.beats.getBounds();
+            if (bounds && bounds.isValid()) {
+                map.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
+            }
+        } catch (e) {}
+    }
+
+    /**
+     * Toggle Clean Roads Layer visibility
+     */
+    function toggleCleanRoadsLayer(show) {
+        if (!map || !layers.cleanRoads) return false;
+        if (typeof show === 'boolean') {
+            if (show && !map.hasLayer(layers.cleanRoads)) map.addLayer(layers.cleanRoads);
+            else if (!show && map.hasLayer(layers.cleanRoads)) map.removeLayer(layers.cleanRoads);
+        } else {
+            if (map.hasLayer(layers.cleanRoads)) map.removeLayer(layers.cleanRoads);
+            else map.addLayer(layers.cleanRoads);
+        }
+        return map.hasLayer(layers.cleanRoads);
     }
 
     return {
@@ -575,6 +636,10 @@ window.MapController = (function () {
         enableSingleBeatEdit,
         isBeatEditingActive: () => isBeatEditingActive,
         clearDrawnItems,
+        clearAllLayersForNewImport,
+        fitBeatsBounds,
+        toggleCleanRoadsLayer,
+        calculateRoadsInPolygon,
         setOnAreaDrawnCallback: (cb) => { onAreaDrawnCallback = cb; },
         getActiveCleanRoads: () => activeCleanRoadsGeoJSON,
         getActiveWards: () => activeWardsGeoJSON,

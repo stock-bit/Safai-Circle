@@ -30,6 +30,39 @@ window.KMLParser = (function () {
     }
 
     /**
+     * Specialized parser to import only Sweeper Beat boundaries from KML/KMZ
+     * - Strictly extracts the 30 beat boundary Polygons from the 'Sweeper Beats' folder
+     * - Completely excludes 'Ward Boundaries' folder so wards don't overlap beats
+     * - Ignores all LineStrings so rainbow lines do not clutter the map
+     */
+    async function parseSweeperBeatsFile(source, fileName = 'beats.kml') {
+        const isKmz = fileName.toLowerCase().endsWith('.kmz') || 
+                      (source instanceof File && source.name.toLowerCase().endsWith('.kmz'));
+
+        if (isKmz) {
+            if (typeof JSZip === 'undefined') {
+                throw new Error('JSZip library is required to unpack .kmz files.');
+            }
+            const zip = new JSZip();
+            const zipContent = await zip.loadAsync(source);
+            let kmlFile = zipContent.file('doc.kml') || zipContent.file(/\.kml$/i)[0];
+            if (!kmlFile) throw new Error('No valid KML file found inside the KMZ archive.');
+            const kmlText = await kmlFile.async('string');
+            return parseSweeperBeatsKML(kmlText);
+        } else if (typeof source === 'string') {
+            return parseSweeperBeatsKML(source);
+        } else if (source instanceof File || source instanceof Blob) {
+            const text = await source.text();
+            return parseSweeperBeatsKML(text);
+        } else if (source instanceof ArrayBuffer) {
+            const decoder = new TextDecoder('utf-8');
+            return parseSweeperBeatsKML(decoder.decode(source));
+        } else {
+            throw new Error('Unsupported file format');
+        }
+    }
+
+    /**
      * Unzip KMZ file and parse contained doc.kml
      */
     async function parseKMZ(kmzData) {
@@ -70,14 +103,108 @@ window.KMLParser = (function () {
             throw new Error('XML parsing error: ' + parseError.textContent);
         }
 
+        // Build KML Style Map (maps styleId -> hexColor)
+        const styleMap = buildKMLStyleMap(xmlDoc);
+
         // Use togeojson library if available, otherwise custom XML parser
         if (typeof toGeoJSON !== 'undefined' && typeof toGeoJSON.kml === 'function') {
             const geojson = toGeoJSON.kml(xmlDoc);
+            applyKMLStyles(geojson, xmlDoc, styleMap);
             sanitizeGeoJSON(geojson);
             return geojson;
         }
 
-        return customKMLToGeoJSON(xmlDoc);
+        const geojson = customKMLToGeoJSON(xmlDoc);
+        applyKMLStyles(geojson, xmlDoc, styleMap);
+        return geojson;
+    }
+
+    /**
+     * Convert KML AABBGGRR color format to #RRGGBB
+     */
+    function kmlColorToHex(kmlColor) {
+        if (!kmlColor || typeof kmlColor !== 'string') return null;
+        const cleaned = kmlColor.trim();
+        if (cleaned.length === 8) {
+            const r = cleaned.substr(6, 2);
+            const g = cleaned.substr(4, 2);
+            const b = cleaned.substr(2, 2);
+            return `#${r}${g}${b}`;
+        } else if (cleaned.length === 6) {
+            const r = cleaned.substr(4, 2);
+            const g = cleaned.substr(2, 2);
+            const b = cleaned.substr(0, 2);
+            return `#${r}${g}${b}`;
+        }
+        return null;
+    }
+
+    /**
+     * Map all <Style id="..."> elements to hex colors
+     */
+    function buildKMLStyleMap(xmlDoc) {
+        const styleMap = {};
+        const styles = xmlDoc.getElementsByTagName('Style');
+        for (let i = 0; i < styles.length; i++) {
+            const s = styles[i];
+            const sId = s.getAttribute('id');
+            if (!sId) continue;
+
+            let hex = null;
+            const polyStyle = s.getElementsByTagName('PolyStyle')[0];
+            if (polyStyle) {
+                const colorEl = polyStyle.getElementsByTagName('color')[0];
+                if (colorEl && colorEl.textContent) {
+                    hex = kmlColorToHex(colorEl.textContent);
+                }
+            }
+            if (!hex) {
+                const lineStyle = s.getElementsByTagName('LineStyle')[0];
+                if (lineStyle) {
+                    const colorEl = lineStyle.getElementsByTagName('color')[0];
+                    if (colorEl && colorEl.textContent) {
+                        hex = kmlColorToHex(colorEl.textContent);
+                    }
+                }
+            }
+            if (hex) {
+                styleMap[sId] = hex;
+                styleMap['#' + sId] = hex;
+            }
+        }
+        return styleMap;
+    }
+
+    /**
+     * Apply styleMap colors to parsed features
+     */
+    function applyKMLStyles(geojson, xmlDoc, styleMap) {
+        if (!geojson || !geojson.features) return;
+        const placemarks = xmlDoc.getElementsByTagName('Placemark');
+
+        geojson.features.forEach((feat, idx) => {
+            feat.properties = feat.properties || {};
+            
+            // Only apply custom colors to Polygon boundaries, NOT to roads/LineStrings!
+            const isPolygon = feat.geometry && (feat.geometry.type === 'Polygon' || feat.geometry.type === 'MultiPolygon');
+            if (!isPolygon) return;
+
+            // 1. Check if styleUrl is already set in properties
+            let sUrl = feat.properties.styleUrl || feat.properties['styleUrl'];
+            // 2. If not, lookup corresponding Placemark in XML
+            if (!sUrl && placemarks[idx]) {
+                const pmStyleUrl = placemarks[idx].getElementsByTagName('styleUrl')[0];
+                if (pmStyleUrl) sUrl = pmStyleUrl.textContent.trim();
+            }
+
+            if (sUrl && styleMap[sUrl]) {
+                feat.properties.color = styleMap[sUrl];
+            } else if (feat.properties.stroke && feat.properties.stroke.startsWith('#')) {
+                feat.properties.color = feat.properties.stroke;
+            } else if (feat.properties.fill && feat.properties.fill.startsWith('#')) {
+                feat.properties.color = feat.properties.fill;
+            }
+        });
     }
 
     /**
@@ -280,8 +407,155 @@ window.KMLParser = (function () {
         return coords;
     }
 
+    /**
+     * Specialized parser for Sweeper Beats KML:
+     * - Identifies the 'Sweeper Beats' folder (or any folder matching beat plan)
+     * - Strictly extracts the 30 beat boundary POLYGONS and their exact beat names
+     * - Excludes all Placemarks inside 'Ward Boundaries' or matching ward names
+     * - Completely ignores LineStrings so no rainbow lines clutter the map
+     * - Extracts original KML colors for the beat boundaries
+     */
+    function parseSweeperBeatsKML(kmlText) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(kmlText, 'text/xml');
+        
+        const parseError = xmlDoc.getElementsByTagName('parsererror')[0];
+        if (parseError) {
+            throw new Error('XML parsing error: ' + parseError.textContent);
+        }
+
+        const styleMap = buildKMLStyleMap(xmlDoc);
+        const folders = xmlDoc.getElementsByTagName('Folder');
+        
+        let beatsFolder = null;
+        const wardFolders = [];
+
+        for (let i = 0; i < folders.length; i++) {
+            const f = folders[i];
+            const nameEl = f.getElementsByTagName('name')[0];
+            const fName = nameEl ? nameEl.textContent.trim().toLowerCase() : '';
+            
+            if (fName.includes('ward') || fName.includes('wardbandi') || fName.includes('ward boundaries')) {
+                wardFolders.push(f);
+            } else if (!beatsFolder && (fName.includes('sweeper beat') || fName.includes('beats') || fName.includes('free-form'))) {
+                beatsFolder = f;
+            }
+        }
+
+        const features = [];
+        const wardNameRegex = /^\s*(ward\b[\s_-]*\d*|\d{1,2})\s*$/i;
+
+        // Helper to check if a node is inside any of the wardFolders
+        function isInsideWardFolder(node) {
+            let curr = node.parentNode;
+            while (curr && curr.nodeType === 1) {
+                if (wardFolders.includes(curr)) return true;
+                const nEl = curr.getElementsByTagName ? curr.getElementsByTagName('name')[0] : null;
+                const nTxt = nEl ? nEl.textContent.trim().toLowerCase() : '';
+                if (nTxt.includes('ward boundaries') || nTxt === 'wards') return true;
+                curr = curr.parentNode;
+            }
+            return false;
+        }
+
+        // Helper to extract polygon from Placemark
+        function extractBeatFromPlacemark(pm, fallbackName = null) {
+            // Check if Placemark has a Polygon
+            const poly = pm.getElementsByTagName('Polygon')[0];
+            if (!poly) return null;
+
+            const nameEl = pm.getElementsByTagName('name')[0];
+            let name = fallbackName || (nameEl ? nameEl.textContent.trim() : 'Unnamed Beat');
+            
+            // Clean up suffixes like [Boundary], [Boundary Perimeter], (12 Sweepers | 10.09 km), etc.
+            name = name.replace(/\s*\[Boundary.*?\]/i, '').replace(/\s*\(\d+\s*Sweepers.*?\)/i, '').trim();
+
+            // Ignore if name matches ward
+            if (wardNameRegex.test(name)) return null;
+
+            const geom = parsePlacemarkGeometry(pm);
+            if (!geom || (geom.type !== 'Polygon' && geom.type !== 'MultiPolygon')) return null;
+
+            // Extract style / color
+            let color = null;
+            const styleUrlEl = pm.getElementsByTagName('styleUrl')[0];
+            const sUrl = styleUrlEl ? styleUrlEl.textContent.trim() : null;
+            if (sUrl && styleMap[sUrl]) {
+                color = styleMap[sUrl];
+            }
+
+            // Description / ExtendedData
+            const descEl = pm.getElementsByTagName('description')[0];
+
+            return {
+                type: 'Feature',
+                id: `beat_${features.length + 1}`,
+                geometry: geom,
+                properties: {
+                    name: name,
+                    beatNo: name,
+                    color: color,
+                    description: descEl ? descEl.textContent.trim() : ''
+                }
+            };
+        }
+
+        if (beatsFolder) {
+            // Case A: Structured KML with Sweeper Beats folder
+            // Check if it has subfolders for each beat
+            const subfolders = [];
+            for (let i = 0; i < beatsFolder.childNodes.length; i++) {
+                const child = beatsFolder.childNodes[i];
+                if (child.nodeType === 1 && child.nodeName === 'Folder') {
+                    subfolders.push(child);
+                }
+            }
+
+            if (subfolders.length > 0) {
+                // Each subfolder is a beat!
+                subfolders.forEach(sf => {
+                    const sfNameEl = sf.getElementsByTagName('name')[0];
+                    const sfName = sfNameEl ? sfNameEl.textContent.trim() : null;
+                    const placemarks = sf.getElementsByTagName('Placemark');
+                    for (let p = 0; p < placemarks.length; p++) {
+                        const feat = extractBeatFromPlacemark(placemarks[p], sfName);
+                        if (feat) {
+                            features.push(feat);
+                            break; // 1 polygon per beat subfolder
+                        }
+                    }
+                });
+            } else {
+                // Direct placemarks in beatsFolder
+                const placemarks = beatsFolder.getElementsByTagName('Placemark');
+                for (let p = 0; p < placemarks.length; p++) {
+                    const feat = extractBeatFromPlacemark(placemarks[p]);
+                    if (feat) features.push(feat);
+                }
+            }
+        }
+
+        // Case B: Fallback if no specific Sweeper Beats folder or features empty
+        if (features.length === 0) {
+            const allPlacemarks = xmlDoc.getElementsByTagName('Placemark');
+            for (let i = 0; i < allPlacemarks.length; i++) {
+                const pm = allPlacemarks[i];
+                if (isInsideWardFolder(pm)) continue; // Strictly skip ward boundaries!
+                const feat = extractBeatFromPlacemark(pm);
+                if (feat) features.push(feat);
+            }
+        }
+
+        return {
+            type: 'FeatureCollection',
+            features: features
+        };
+    }
+
     return {
         parseFile,
+        parseSweeperBeatsFile,
+        parseSweeperBeatsKML,
         parseKMLText,
         parseKMZ
     };

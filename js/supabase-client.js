@@ -208,11 +208,61 @@ window.SupabaseSync = (function () {
         }
     }
 
+    /**
+     * Replace all beats cleanly in Supabase: removes stale rows and saves new beats
+     */
+    async function replaceAllBeats(beats) {
+        const sb = initClient();
+        if (!sb || !beats || beats.length === 0) return false;
+
+        try {
+            // Delete existing rows
+            await sb
+                .from('sweeper_beats')
+                .delete()
+                .neq('id', '_none_placeholder_');
+
+            // Insert new rows with integer beat_no
+            const records = beats.map((b, idx) => ({
+                id: String(b.id || `beat-${idx + 1}`),
+                beat_no: idx + 1,
+                name: b.name,
+                ward: b.ward || 'Sector',
+                length_km: Number(b.length_km) || 0,
+                area_km2: Number(b.area_km2) || 0,
+                segment_count: Number(b.segment_count) || 0,
+                sweepers: Number(b.sweepers) || 11,
+                daily_target_meters: Number(b.dailyTargetMeters) || Math.round(((Number(b.length_km) || 0) * 1000) / (Number(b.sweepers) || 11)),
+                daroga_name: b.darogaName || '',
+                daroga_phone: b.darogaPhone || '',
+                workers: b.workers || '',
+                remarks: b.remarks || '',
+                color: b.color || null,
+                polygon_geojson: b.polygonGeoJSON || null,
+                updated_at: new Date().toISOString()
+            }));
+
+            const { error } = await sb
+                .from('sweeper_beats')
+                .insert(records);
+
+            if (error) {
+                console.warn('Supabase replace error:', error);
+                return false;
+            }
+            return true;
+        } catch (e) {
+            console.warn('Network error during replaceAllBeats:', e);
+            return false;
+        }
+    }
+
     return {
         initClient,
         fetchBeats,
         saveBeat,
         saveAllBeats,
+        replaceAllBeats,
         deleteBeat,
         subscribeToChanges,
         isConfigured: () => true,

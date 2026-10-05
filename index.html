@@ -33,9 +33,9 @@
             </span>
             <button id="btn-jump-roster" class="btn btn-sm btn-outline" title="Scroll down to master beat and daroga allotment table">📋 Allotment Roster</button>
             <button id="btn-header-gh-export" class="btn btn-sm btn-success" title="Download updated files ready to commit to GitHub Pages">🚀 Export for GitHub</button>
-            <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;" title="Import customized beat boundaries or plan file">
+            <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;" title="Import customized beat boundaries or plan file (KML, KMZ, GeoJSON)">
                 📥 Import Plan
-                <input type="file" id="input-import-beats" accept=".geojson,.json,.kml" style="display: none;" />
+                <input type="file" id="input-import-beats" accept=".geojson,.json,.kml,.kmz" style="display: none;" />
             </label>
             <label class="btn btn-sm btn-outline" style="margin: 0; cursor: pointer;">
                 📂 Load Project
@@ -182,7 +182,11 @@
                         </div>
                         <div class="d-flex gap-2 mb-2">
                             <button id="btn-toggle-beat-labels" class="btn btn-sm btn-outline" style="flex:1;" title="Show or hide floating text tags over map">🏷️ Show/Hide Map Labels</button>
-                            <button id="btn-reset-default-beats" class="btn btn-sm btn-outline-danger" style="flex:1;" title="Reset customized boundaries back to default 30 beats">🔄 Reset to Defaults</button>
+                            <label class="btn btn-sm btn-outline-success" style="flex:1; margin:0; text-align:center; cursor:pointer;" title="Upload updated KML or KMZ to replace beats">
+                                📥 Upload Beat KML
+                                <input type="file" id="panel-input-import-kml" accept=".kml,.kmz,.geojson,.json" style="display:none;" />
+                            </label>
+                            <button id="btn-reset-default-beats" class="btn btn-sm btn-outline-danger" style="flex:1;" title="Reset customized boundaries back to default 30 beats">🔄 Reset Defaults</button>
                         </div>
                         <div class="small text-muted mb-2" style="font-size:0.78rem; line-height:1.35;">
                             ✨ <b>Free-Form Continuous Beats:</b> 0% overlap, divided along major arteries (Circular Rd, Railway Line, Delhi Rd, Bawal Rd). Sized for <b>10–12 sweepers per beat</b> (~10.5 km of road per beat).
@@ -255,6 +259,7 @@
         <main class="map-container">
             <!-- Floating Map Toolbar -->
             <div class="map-toolbar-top">
+                <button id="map-btn-toggle-roads" class="map-tool-btn" title="Toggle Clean Road Network overlay on map">🛣️ Roads Layer</button>
                 <button id="map-btn-toggle-labels" class="map-tool-btn" title="Show or hide floating text tags over map">🏷️ Show Labels</button>
                 <button id="map-btn-toggle-edit" class="map-tool-btn" title="Enable vertex dragging on beat borders">✏️ Edit Borders</button>
                 <button id="map-btn-view-roster" class="map-tool-btn" title="Scroll down to Master Allotment Roster Table below map">📋 Allotment Table (30 Beats)</button>

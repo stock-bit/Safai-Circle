@@ -82,31 +82,118 @@ window.BeatManager = (function () {
     }
 
     /**
-     * Load Free-Form Non-Overlapping Beats from GeoJSON
+     * Load Free-Form Non-Overlapping Beats from GeoJSON or parsed KML
+     * - Only includes Polygons / MultiPolygons
+     * - Filters out ward polygons (e.g. Ward 1..32)
+     * - Automatically recalculates clean road length & sweeper counts immediately
+     * - Resets old roster/daroga allotment data as a new beat plan generates fresh roster
+     * - Limits strictly to 30 beats
      */
     function loadFreeformBeats(geoJSON) {
         clearAllBeats();
         if (!geoJSON || !geoJSON.features) return [];
-        geoJSON.features.forEach(f => {
+
+        const defaultBeatColors = [
+            '#e11d48', '#ea580c', '#d97706', '#65a30d', '#16a34a', 
+            '#059669', '#0d9488', '#0891b2', '#0284c7', '#2563eb', 
+            '#4f46e5', '#7c3aed', '#9333ea', '#c026d3', '#db2777'
+        ];
+
+        // 1. Filter out LineStrings / non-polygons and Ward boundaries
+        const wardNameRegex = /^\s*(ward\b[\s_-]*\d*|\d{1,2})\s*$/i;
+        const polygonFeatures = geoJSON.features.filter(f => {
+            if (!f || !f.geometry) return false;
+            const geomType = f.geometry.type;
+            if (geomType !== 'Polygon' && geomType !== 'MultiPolygon') return false;
+
+            const name = (f.properties && (f.properties.name || f.properties.Name || f.properties.beatNo)) || '';
+            // If feature name matches purely a ward number or Ward NN, ignore
+            if (wardNameRegex.test(name.trim())) return false;
+            return true;
+        });
+
+        // 2. Process up to 30 beats
+        const maxBeats = Math.min(30, polygonFeatures.length);
+        const newBeatsList = [];
+
+        for (let i = 0; i < maxBeats; i++) {
+            const f = polygonFeatures[i];
             const props = f.properties || {};
-            addBeat({
-                id: f.id || `beat_${props.id}`,
-                name: props.name || props.beatNo || `Beat ${props.id}`,
-                ward: props.type || 'Cross-Ward Sector',
-                length_km: props.length_km || 0,
-                area_km2: props.area_km2 || (typeof turf !== 'undefined' ? Number((turf.area(f) / 1000000).toFixed(2)) : 0),
-                segment_count: props.roadCount || 0,
-                sweepers: props.sweepers || 11,
-                dailyTargetMeters: props.dailyTargetMeters || 600,
-                darogaName: props.darogaName || '',
-                darogaPhone: props.darogaPhone || '',
-                workers: props.workers || '',
-                color: props.color || null,
+            const beatNum = i + 1;
+            const padNum = String(beatNum).padStart(2, '0');
+
+            // Format clean name
+            let cleanName = props.name || props.beatNo || `Beat ${padNum}`;
+            cleanName = cleanName.replace(/\s*\[Boundary\]/i, '').trim();
+
+            // Calculate exact clipped road length and stats using Turf.js immediately
+            let roadLengthKm = 0;
+            let roadCount = 0;
+            let areaKm2 = 0;
+            let wardNames = 'Cross-Ward Sector';
+
+            if (window.MapController && window.MapController.calculateRoadsInPolygon) {
+                const stats = window.MapController.calculateRoadsInPolygon(f);
+                roadLengthKm = stats.length_km || 0;
+                roadCount = stats.segment_count || 0;
+                areaKm2 = stats.area_km2 || 0;
+                if (stats.wards && stats.wards.length > 0) {
+                    wardNames = stats.wards.map(w => `Ward ${w}`).join(', ');
+                }
+            } else if (typeof turf !== 'undefined') {
+                try {
+                    areaKm2 = Number((turf.area(f) / 1000000).toFixed(2));
+                } catch (e) {}
+                roadLengthKm = Number(props.length_km || 0);
+                roadCount = Number(props.roadCount || props.segment_count || 0);
+            }
+
+            // Fallback to props if calculation had no roads layer loaded yet
+            if (roadLengthKm === 0 && props.length_km) {
+                roadLengthKm = Number(props.length_km);
+            }
+            if (roadCount === 0 && (props.roadCount || props.segment_count)) {
+                roadCount = Number(props.roadCount || props.segment_count);
+            }
+
+            // Compute sweepers required (~900m per sweeper target as requested)
+            const TARGET_METERS_PER_SWEEPER = 900;
+            const sweepers = Math.max(1, Math.round((roadLengthKm * 1000) / TARGET_METERS_PER_SWEEPER)) || (props.sweepers || 11);
+            const dailyTarget = Math.round((roadLengthKm * 1000) / sweepers);
+
+            const beatColor = props.color || defaultBeatColors[i % defaultBeatColors.length];
+
+            const beatObj = {
+                id: `beat-${beatNum}`,
+                name: cleanName,
+                ward: props.ward || props.type || wardNames,
+                length_km: Number(roadLengthKm.toFixed(2)),
+                area_km2: Number(areaKm2),
+                segment_count: roadCount,
+                sweepers: sweepers,
+                dailyTargetMeters: dailyTarget,
+                // Fresh roster reset upon upload as new beat boundaries create fresh roster
+                darogaName: '',
+                darogaPhone: '',
+                workers: '',
+                color: beatColor,
                 remarks: props.remarks || 'Continuous non-overlapping free-form beat',
                 polygonGeoJSON: f
-            });
-        });
+            };
+
+            beats.push(beatObj);
+            newBeatsList.push(beatObj);
+        }
+
         saveToLocalStorage();
+
+        // Sync fresh 30 beats directly to Supabase Cloud if available
+        if (window.SupabaseSync && window.SupabaseSync.replaceAllBeats) {
+            window.SupabaseSync.replaceAllBeats(newBeatsList).catch(e => {
+                console.warn('Supabase replace error on loadFreeformBeats:', e);
+            });
+        }
+
         return getBeats();
     }
 
